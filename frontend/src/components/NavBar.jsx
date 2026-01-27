@@ -76,7 +76,7 @@ const NavBar = () => {
                 {/* Admin */}
                 <li
                     onClick={() =>
-                        window.open("https://medicare-app-admin.onrender.com", "_blank")
+                        window.open("https://medicare-admin-a2zd.onrender.com", "_blank")
                     }
                     className="py-1 cursor-pointer"
                 >
@@ -247,7 +247,7 @@ const NavBar = () => {
 
                     <li
                         onClick={() => {
-                            window.open("https://medicare-app-admin.onrender.com", "_blank");
+                            window.open("https://medicare-admin-a2zd.onrender.com", "_blank");
                             setShowMenu(false);
                         }}
                         className="mt-4 px-8 py-3 border border-gray-400 rounded-full cursor-pointer hover:bg-gray-100 hover:border-gray-600 transition-all shadow-sm"

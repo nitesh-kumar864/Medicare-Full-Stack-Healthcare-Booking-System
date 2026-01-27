@@ -3,8 +3,8 @@ import cors from "cors";
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://medicare-app-ye9i.onrender.com",
-    "https://medicare-app-admin.onrender.com"
+    "https://medicare-pr8s.onrender.com",
+    "https://medicare-admin-a2zd.onrender.com"
 ];
 
 const corsOptions = {
