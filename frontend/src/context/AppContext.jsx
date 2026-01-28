@@ -65,17 +65,12 @@ const AppContextProvider = ({ children }) => {
 
   // ---------------- APP START ----------------
   useEffect(() => {
-    const init = async () => {
       const validToken = getValidToken();
       if (validToken) {
         setToken(validToken);
-        await loadUserProfileData(validToken);
+        loadUserProfileData(validToken);
       }
-      await getDoctorsData();
       setInitialLoading(false);
-    };
-
-    init();
   }, []);
 
   // token change listener

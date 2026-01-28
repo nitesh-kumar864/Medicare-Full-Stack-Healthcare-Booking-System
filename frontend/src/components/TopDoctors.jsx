@@ -4,11 +4,7 @@ import { AppContext } from '../context/AppContext';
 
 const TopDoctors = () => {
     const navigate = useNavigate();
-    const { doctors, getDoctorsData } = useContext(AppContext);
-
-    useEffect(() => {
-        getDoctorsData();
-    }, []);
+    const { doctors} = useContext(AppContext);
 
     const handleNavigate = (path) => {
         navigate(path);

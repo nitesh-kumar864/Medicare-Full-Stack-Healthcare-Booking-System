@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
-import {
-  Filter,
-  Stethoscope,
-  Baby,
-  Brain,
-  Heart,
-  Venus,
-  Sun,
-  Bone,
-  Eye
+import DoctorPageSkeleton from "../components/skeletons/DoctorPageSkeleton";
+import { 
+  Filter, 
+  Stethoscope, 
+  Baby, 
+  Brain, 
+  Heart, 
+  Venus, 
+  Sun, 
+  Bone, 
+  Eye 
 } from "lucide-react";
 
 const Doctor = () => {
@@ -18,10 +19,13 @@ const Doctor = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { doctors } = useContext(AppContext);
+const { doctors, getDoctorsData } = useContext(AppContext);
+
 
   const [filterDoc, setFilterDoc] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState("");
 
   const selectedSpeciality = speciality
@@ -58,10 +62,37 @@ const Doctor = () => {
 
     setFilterDoc(result);
   };
+useEffect(() => {
+  let intervalId;
 
-  useEffect(() => {
-    if (doctors && doctors.length > 0) applyFilter();
-  }, [doctors, selectedSpeciality, search]);
+  const initLoad = async () => {
+    if (!doctors || doctors.length === 0) {
+      await getDoctorsData(); 
+    }
+    setLoading(false); 
+  };
+
+  initLoad();
+
+  intervalId = setInterval(() => {
+    getDoctorsData(); 
+  }, 15000);
+
+  return () => clearInterval(intervalId);
+}, []);
+
+
+useEffect(() => {
+  if (doctors) {
+    applyFilter();
+  }
+}, [doctors, selectedSpeciality, search]);
+ 
+
+if (loading) {
+  return <DoctorPageSkeleton />;
+}
+
 
   return (
     <div className="pt-24">
@@ -86,8 +117,9 @@ const Doctor = () => {
 
           {/* FILTER TOGGLE BUTTON (Mobile) */}
           <button
-            className={`flex items-center gap-2 py-1 px-3 border rounded text-sm transition-all sm:hidden ${showFilter ? "bg-primary text-white" : ""
-              }`}
+            className={`flex items-center gap-2 py-1 px-3 border rounded text-sm transition-all sm:hidden ${
+              showFilter ? "bg-primary text-white" : ""
+            }`}
             onClick={() => setShowFilter((prev) => !prev)}
           >
             <Filter size={16} />
@@ -96,8 +128,9 @@ const Doctor = () => {
 
           {/* SPECIALITY FILTER LIST */}
           <div
-            className={`flex-col gap-3 text-sm ${showFilter ? "flex" : "hidden sm:flex"
-              }`}
+            className={`flex-col gap-3 text-sm ${
+              showFilter ? "flex" : "hidden sm:flex"
+            }`}
           >
             {specialityList.map((item) => {
               const Icon = item.icon;
@@ -113,9 +146,10 @@ const Doctor = () => {
                     cursor-pointer px-4 py-2 rounded-full border shadow-sm 
                     flex items-center gap-2 transition-all duration-300 select-none
 
-                    ${speciality === item.name
-                      ? "bg-primary text-white border-primary scale-[1.03] shadow-md"
-                      : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
+                    ${
+                      speciality === item.name
+                        ? "bg-primary text-white border-primary scale-[1.03] shadow-md"
+                        : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
                     }
                   `}
                 >
@@ -143,12 +177,14 @@ const Doctor = () => {
 
                   <div className="p-4">
                     <div
-                      className={`flex items-center gap-2 text-sm ${item.available ? "text-green-500" : "text-gray-500"
-                        }`}
+                      className={`flex items-center gap-2 text-sm ${
+                        item.available ? "text-green-500" : "text-gray-500"
+                      }`}
                     >
                       <p
-                        className={`w-2 h-2 rounded-full ${item.available ? "bg-green-500" : "bg-gray-400"
-                          }`}
+                        className={`w-2 h-2 rounded-full ${
+                          item.available ? "bg-green-500" : "bg-gray-400"
+                        }`}
                       ></p>
                       <p>{item.available ? "Available" : "Not Available"}</p>
                     </div>

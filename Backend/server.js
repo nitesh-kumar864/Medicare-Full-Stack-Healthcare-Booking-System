@@ -3,7 +3,6 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import 'dotenv/config';
 import connectDB from './config/mongodb.js';
-import connectCloudinary from './config/cloudinary.js';
 
 import adminRouter from './routes/adminRoute.js';
 import doctorRouter from './routes/doctorRoute.js';
@@ -18,7 +17,6 @@ const port = process.env.PORT || 4000;
 
 // DB
 connectDB();
-connectCloudinary();
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -73,6 +71,15 @@ app.use("/api/reviews", reviewRoutes);
 app.get('/', (req, res) => {
   res.send('API Working');
 });
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: Date.now(),
+  });
+});
+
 
 // start
 app.listen(port, () => {
