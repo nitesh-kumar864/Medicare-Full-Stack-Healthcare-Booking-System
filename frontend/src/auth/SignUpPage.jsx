@@ -10,6 +10,7 @@ import GoogleLoginPatient from "../components/GoogleLoginPatient";
 import FloatingShape from "../components/FloatingShape";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { ButtonLoader } from "../components/Loader";
+import useUsernameAvailability from "../hooks/useUsernameAvailability";
 
 const SignUpPage = () => {
   const { backendUrl, setToken } = useContext(AppContext);
@@ -21,11 +22,15 @@ const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-  const [username, setUsername] = useState("");
-  const [usernameStatus, setUsernameStatus] = useState("");
-  const [checkingUsername, setCheckingUsername] = useState(false);
-  const [isUsernameValid, setIsUsernameValid] = useState(false);
-
+  const {
+    username,
+    usernameStatus,
+    isUsernameValid,
+    checkingUsername,
+    checkUsernameAvailability,
+  } = useUsernameAvailability({
+    backendUrl,
+  });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,103 +72,73 @@ const SignUpPage = () => {
     setStep(2);
   };
 
-  const checkUsernameAvailability = async (value) => {
-    const username = value.toLowerCase().trim();
-    setUsername(username);
-
-    if (username.length < 4) {
-      setUsernameStatus("Username must be at least 4 characters");
-      setIsUsernameValid(false);
-      setCheckingUsername(false);
-      return;
-    }
-
-    try {
-      setCheckingUsername(true);
-      setUsernameStatus("");
-
-      const { data } = await axios.post(
-        backendUrl + "/api/user/check-username",
-        { username }
-      );
-
-      if (data.available) {
-        setUsernameStatus("Username available");
-        setIsUsernameValid(true);
-      } else {
-        setUsernameStatus(data.message);
-        setIsUsernameValid(false);
-      }
-    } catch (err) {
-      setUsernameStatus("Error checking username");
-      setIsUsernameValid(false);
-    } finally {
-      setCheckingUsername(false);
-    }
-  };
-
 
   // SIGNUP FUNCTION
- const handleSignUp = async (e) => {
-  e.preventDefault();
+  const handleSignUp = async (e) => {
+    e.preventDefault();
 
-  const scrollTopMobile = () => {
-    if (window.innerWidth <= 640) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
+    const scrollTopMobile = () => {
+      if (window.innerWidth <= 640) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
 
-  
-  if (!acceptedTerms) {
-    scrollTopMobile();
-    toast.error("Please accept Terms & Conditions to continue");
-    return;
-  }
-
-  if (!validateFields()) {
-    scrollTopMobile();
-    return;
-  }
-
-  if (!isUsernameValid) {
-    scrollTopMobile();
+    if (!isUsernameValid) {
     toast.error("Please choose a valid username");
     return;
   }
 
-  setIsLoading(true);
 
-  try {
- 
-    const { data } = await axios.post(
-      backendUrl + "/api/user/signup/send-otp",
-      { name, username, email, password }
-    );
-
-    if (data.success) {
-      toast.success("OTP sent to your email");
-
-      navigate("/verify-otp", {
-        state: {
-          name,
-          username,
-          email,
-          password,
-        },
-      });
-    } else {
+    if (!acceptedTerms) {
       scrollTopMobile();
-      toast.error(data.message || "Failed to send OTP");
+      toast.error("Please accept Terms & Conditions to continue");
+      return;
     }
-  } catch (err) {
-    scrollTopMobile();
-    toast.error(
-      err.response?.data?.message || err.message || "OTP send failed"
-    );
-  } finally {
-    setIsLoading(false);
-  }
-};
+
+    if (!validateFields()) {
+      scrollTopMobile();
+      return;
+    }
+
+    if (!isUsernameValid) {
+      scrollTopMobile();
+      toast.error("Please choose a valid username");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+
+      const { data } = await axios.post(
+        backendUrl + "/api/user/signup/send-otp",
+        { name, username, email, password }
+      );
+
+      if (data.success) {
+        toast.success("OTP sent to your email");
+
+        navigate("/verify-otp", {
+          state: {
+            name,
+            username,
+            email,
+            password,
+          },
+        });
+      } else {
+        scrollTopMobile();
+        toast.error(data.message || "Failed to send OTP");
+      }
+    } catch (err) {
+      scrollTopMobile();
+      toast.error(
+        err.response?.data?.message || err.message || "OTP send failed"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
   return (

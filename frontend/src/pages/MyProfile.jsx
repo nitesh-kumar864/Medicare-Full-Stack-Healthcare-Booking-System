@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import useUsernameAvailability from "../hooks/useUsernameAvailability";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileDetails from "../components/profile/ProfileDetails";
 import ProfileActions from "../components/profile/ProfileActions";
@@ -25,46 +25,19 @@ const MyProfile = () => {
   const [image, setImage] = useState(false);
   const [updating, setUpdating] = useState(false);
 
-  const [newUsername, setNewUsername] = useState("");
-  const [usernameStatus, setUsernameStatus] = useState("");
-  const [checkingUsername, setCheckingUsername] = useState(false);
-  const [isUsernameValid, setIsUsernameValid] = useState(false);
-
-  // ---------------- USERNAME CHECK ----------------
-  const checkUsernameAvailability = async (value) => {
-    const username = value.toLowerCase().trim();
-    setNewUsername(username);
-    setUsernameStatus("");
-    setIsUsernameValid(false);
-
-    if (username === userData.username) {
-      setUsernameStatus("This is already your current username");
-      return;
-    }
-
-    if (username.length < 4) return;
-
-    try {
-      setCheckingUsername(true);
-
-      const { data } = await axios.post(
-        backendUrl + "/api/user/check-username",
-        { username },
-        { headers: { token } }
-      );
-
-      if (data.available) {
-        setUsernameStatus("Username available");
-        setIsUsernameValid(true);
-      } else {
-        setUsernameStatus(data.message);
-      }
-    } catch {
-      setUsernameStatus("Error checking username");
-    } finally {
-      setCheckingUsername(false);
-    }
-  };
+  
+  const {
+    username: newUsername,
+    setUsername: setNewUsername,
+    usernameStatus,
+    isUsernameValid,
+    checkingUsername,
+    checkUsernameAvailability,
+  } = useUsernameAvailability({
+    backendUrl,
+    token,
+    currentUsername: userData.username,
+  });
 
   // ---------------- CHANGE USERNAME ----------------
   const changeUsername = async () => {
@@ -85,9 +58,7 @@ const MyProfile = () => {
           username: data.username,
         }));
 
-        setNewUsername("");
-        setUsernameStatus("");
-        setIsUsernameValid(false);
+        setIsUsernameEdit(false);
       } else {
         toast.error(data.message);
       }
@@ -165,8 +136,8 @@ const MyProfile = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          error.message ||
-          "Something went wrong"
+        error.message ||
+        "Something went wrong"
       );
     } finally {
       setUpdating(false);

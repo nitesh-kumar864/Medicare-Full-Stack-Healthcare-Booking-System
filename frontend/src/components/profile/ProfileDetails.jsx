@@ -25,7 +25,7 @@ const ProfileDetails = ({
 
             {!isUsernameEdit ? (
               <span className="font-semibold text-gray-900">
-                @{userData.username}
+                {userData.username}
               </span>
             ) : (
               <input
@@ -54,7 +54,7 @@ const ProfileDetails = ({
           ) : (
             <div className="flex gap-3">
               <button
-                disabled={!isUsernameValid || checkingUsername}
+                disabled={!isUsernameValid || checkingUsername || newUsername === userData.username}
                 onClick={async () => {
                   await changeUsername();
                   setIsUsernameEdit(false);

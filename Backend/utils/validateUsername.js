@@ -18,7 +18,7 @@ export const validateUsername = async (username) => {
 
   const exists = await userModel.findOne({ username });
   if (exists) {
-    return { valid: false, message: "Username already taken" };
+    return { valid: false, message: "This username is already taken"};
   }
 
   return { valid: true, username };

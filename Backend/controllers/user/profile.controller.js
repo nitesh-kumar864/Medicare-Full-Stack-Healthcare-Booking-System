@@ -62,7 +62,7 @@ export const changeUsername = async (req, res) => {
     return res.json(result);
   } catch (error) {
     if (error.code === 11000) {
-      return res.json({
+      return res.status(409).json({
         success: false,
         message: "This username is not available",
       });
