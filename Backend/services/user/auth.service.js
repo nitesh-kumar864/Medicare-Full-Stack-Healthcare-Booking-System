@@ -249,50 +249,52 @@ export const forgotPasswordService = async ({ identifier }) => {
     return {
         success: true,
         message: "Reset link sent successfully",
+        maskedEmail,
         cooldown: 120,
     };
+
 
 };
 
 // RESET PASSWORD
 export const resetPasswordService = async (token, password) => {
-  const strongPasswordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\]).{8,}$/;
+    const strongPasswordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\]).{8,}$/;
 
-  if (!strongPasswordRegex.test(password)) {
-    return {
-      success: false,
-      message:
-        "Password must be at least 8 chars include uppercase, lowercase, number, and special character",
-    };
-  }
+    if (!strongPasswordRegex.test(password)) {
+        return {
+            success: false,
+            message:
+                "Password must be at least 8 chars include uppercase, lowercase, number, and special character",
+        };
+    }
 
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-  const user = await userModel.findOne({
-    resetPasswordToken: hashedToken,
-    resetPasswordExpire: { $gt: Date.now() },
-  });
+    const user = await userModel.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: { $gt: Date.now() },
+    });
 
-  if (!user) {
-    return { success: false, message: "Invalid or expired reset link" };
-  }
+    if (!user) {
+        return { success: false, message: "Invalid or expired reset link" };
+    }
 
-  user.password = await bcrypt.hash(password, 10);
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
-  await user.save();
+    user.password = await bcrypt.hash(password, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
 
-  await sendEmail({
-    to: user.email,
-    subject: "Your password has been changed",
-    html: resetPasswordSuccessTemplate({ name: user.name }),
-  });
+    await sendEmail({
+        to: user.email,
+        subject: "Your password has been changed",
+        html: resetPasswordSuccessTemplate({ name: user.name }),
+    });
 
-  return { success: true, message: "Password reset successful" };
+    return { success: true, message: "Password reset successful" };
 };
 
 //  CHECK AUTH
 export const checkAuthService = async () => {
-  return { success: true };
+    return { success: true };
 };

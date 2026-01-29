@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
-import { Mail } from "lucide-react";
+import { Mail, ArrowLeft } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
@@ -13,7 +13,8 @@ const ForgotPassword = () => {
   const [identifier, setIdentifier] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [sentToEmail, setSentToEmail] = useState("");
+  const [isSent, setIsSent] = useState(false);
+  const [maskedEmail, setMaskedEmail] = useState("");
   const [cooldown, setCooldown] = useState(0);
 
   const maskEmail = (email) => {
@@ -42,16 +43,19 @@ const ForgotPassword = () => {
         backendUrl + "/api/user/forgot-password",
         { identifier }
       );
+      setIsSent(true);
 
-      if (data.email) {
-        setSentToEmail(data.email);
+      // BEST PRACTICE: backend should send maskedEmail
+      if (data?.maskedEmail) {
+        setMaskedEmail(data.maskedEmail);
       }
 
-      if (data.cooldown) {
+
+      if (data?.cooldown) {
         setCooldown(data.cooldown);
       }
 
-      toast.success(data.message || "Reset link sent");
+      toast.success(data.message || "Reset link has been sent");
       setIdentifier("");
     } catch (err) {
       toast.error(
@@ -81,64 +85,84 @@ const ForgotPassword = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-2xl shadow-lg border p-8"
+          className="bg-white rounded-2xl shadow-lg border"
         >
-          <h2 className="text-2xl font-bold mb-2 text-center text-primary">
-            Forgot Password
-          </h2>
+          <div className="p-8">
+            <h2 className="text-2xl font-bold mb-2 text-center text-primary">
+              Forgot Password
+            </h2>
 
-          <p className="text-sm text-gray-600 text-center mb-6">
-            Enter your email address and we'll send you a link to reset your password.
-          </p>
 
-          {sentToEmail && (
-            <div className="mb-4 p-3 rounded-lg bg-emerald-50 text-emerald-700 text-sm text-center">
-              Reset link has been sent to <b>{maskEmail(sentToEmail)}</b>
-            </div>
-          )}
+            {!isSent ? (
+              <>
+                <p className="text-sm text-gray-600 text-center mb-6">
+                  Enter your email address and we'll send you a link to reset your password.
+                </p>
 
-          <form onSubmit={handleForgotPassword}>
-            <Input
-              icon={Mail}
-              type="text"
-              placeholder="Email or Username"
-              value={identifier}
-              error={error}
-              onChange={(e) => {
-                setError("");
-                setIdentifier(e.target.value.toLowerCase());
-              }}
-            />
 
-            <motion.button
-              whileHover={{ scale: loading || cooldown > 0 ? 1 : 1.02 }}
-              whileTap={{ scale: loading || cooldown > 0 ? 1 : 0.98 }}
-              type="submit"
-              disabled={loading || cooldown > 0}
-              className="w-full mt-4 h-12 bg-primary text-white rounded-lg
+                <form onSubmit={handleForgotPassword}>
+                  <Input
+                    icon={Mail}
+                    type="text"
+                    placeholder="Email or Username"
+                    value={identifier}
+                    error={error}
+                    onChange={(e) => {
+                      setError("");
+                      setIdentifier(e.target.value.toLowerCase());
+                    }}
+                  />
+
+                  <motion.button
+                    whileHover={{ scale: loading || cooldown > 0 ? 1 : 1.02 }}
+                    whileTap={{ scale: loading || cooldown > 0 ? 1 : 0.98 }}
+                    type="submit"
+                    disabled={loading || cooldown > 0}
+                    className="w-full mt-4 h-12 bg-primary text-white rounded-lg
                 shadow flex items-center justify-center gap-3
                 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading && <ButtonLoader />}
-              <span>
-                {loading
-                  ? "Sending..."
-                  : cooldown > 0
-                    ? `Try again in ${cooldown}s`
-                    : "Send Reset Link"}
-              </span>
-            </motion.button>
-          </form>
+                  >
+                    {loading && <ButtonLoader />}
+                    <span>
+                      {loading
+                        ? "Sending..."
+                        : cooldown > 0
+                          ? `Try again in ${cooldown}s`
+                          : "Send Reset Link"}
+                    </span>
+                  </motion.button>
+                </form>
+              </>
+            ) : (
+              <div className="text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                  className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4"
+                >
+                  <Mail className="h-8 w-8 text-white" />
+                </motion.div>
 
-          <p className="text-center mt-6 text-sm text-gray-600">
-            Remember your password?{" "}
+                <p className="text-gray-600 text-sm">
+                  Reset link has been sent to{" "}
+                  <b>{maskedEmail || "your registered email"}</b>, you will receive a
+                  password reset link.
+                </p>
+
+              </div>
+            )}
+          </div>
+
+          <div className="px-8 py-4 bg-gray-50 flex justify-center">
             <Link
               to="/login"
-              className="text-primary font-semibold hover:underline"
+              className="text-sm text-primary hover:underline flex items-center"
             >
-              Login
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Login
             </Link>
-          </p>
+          </div>
         </motion.div>
       </div>
     </div>
