@@ -36,7 +36,8 @@ export const signupService = async ({ name, username, email, password }) => {
     }
 
     const strongPasswordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\])[A-Za-z\d@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\]{8,}$/
+
 
     if (!strongPasswordRegex.test(password)) {
         return { success: false, message: "Please enter a strong password" };
@@ -262,7 +263,8 @@ export const forgotPasswordService = async ({ identifier }) => {
 // RESET PASSWORD
 export const resetPasswordService = async (token, password) => {
     const strongPasswordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\]).{8,}$/;
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\])[A-Za-z\d@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\]{8,}$/
+
 
     if (!strongPasswordRegex.test(password)) {
         return {

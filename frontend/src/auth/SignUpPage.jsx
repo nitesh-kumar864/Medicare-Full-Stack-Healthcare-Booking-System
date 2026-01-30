@@ -48,8 +48,13 @@ const SignUpPage = () => {
     if (!name.trim()) newErrors.name = "Name is required";
     if (!email.trim()) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
-    if (!password.trim()) newErrors.password = "Password is required";
-    else if (password.length < 8) newErrors.password = "Password must be at least 8 characters";
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (password.includes(" ")) {
+      newErrors.password = "Password must not contain spaces";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -84,9 +89,9 @@ const SignUpPage = () => {
     };
 
     if (!isUsernameValid) {
-    toast.error("Please choose a valid username");
-    return;
-  }
+      toast.error("Please choose a valid username");
+      return;
+    }
 
 
     if (!acceptedTerms) {
