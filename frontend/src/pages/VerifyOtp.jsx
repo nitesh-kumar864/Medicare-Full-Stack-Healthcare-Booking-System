@@ -26,6 +26,19 @@ const VerifyOtp = () => {
   const handleChange = (index, value) => {
     if (!/^\d?$/.test(value)) return;
 
+    if (value.length > 1) {
+      const digits = value.slice(0, 6).split("");
+      const newCode = ["", "", "", "", "", ""];
+
+      for (let i = 0; i < 6; i++) {
+        newCode[i] = digits[i] || "";
+      }
+
+      setCode(newCode);
+      inputRefs.current[Math.min(digits.length, 5)]?.focus();
+      return;
+    }
+
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
@@ -111,7 +124,7 @@ const VerifyOtp = () => {
                   key={index}
                   ref={(el) => (inputRefs.current[index] = el)}
                   type="text"
-                  maxLength="1"
+                  maxLength="6"
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}

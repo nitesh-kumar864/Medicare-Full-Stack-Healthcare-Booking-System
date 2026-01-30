@@ -66,7 +66,10 @@ export const googlePatientLogin = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const result = await forgotPasswordService(req.body);
-    return res.json(result);
+    if (!result.success) {
+      return res.status(404).json(result);
+    }
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({
       success: false,

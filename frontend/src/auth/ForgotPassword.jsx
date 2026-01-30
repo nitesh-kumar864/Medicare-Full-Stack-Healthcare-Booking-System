@@ -17,16 +17,6 @@ const ForgotPassword = () => {
   const [maskedEmail, setMaskedEmail] = useState("");
   const [cooldown, setCooldown] = useState(0);
 
-  const maskEmail = (email) => {
-    if (!email || !email.includes("@")) return "";
-    const [local, domain] = email.split("@");
-    if (local.length <= 5) {
-      return local[0] + "***@" + domain;
-    }
-
-    return local.slice(0, 2) + "***" + local.slice(-3) + "@" + domain;
-  };
-
   const handleForgotPassword = async (e) => {
     e.preventDefault();
 

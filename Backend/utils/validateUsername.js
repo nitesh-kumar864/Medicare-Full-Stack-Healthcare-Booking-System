@@ -7,18 +7,38 @@ export const validateUsername = async (username) => {
 
   username = username.toLowerCase().trim();
 
-  if (!/^[a-z0-9._]{4,15}$/.test(username)) {
-    return { valid: false,  message: "a-z, 0-9, dot (.), and underscore (_) only allowed" };
+  const usernameRegex = /^[a-z0-9._]+$/;
+
+  if (!usernameRegex.test(username)) {
+    return {
+      valid: false,
+      message: "Only lowercase letters, numbers, dot (.) and underscore (_) are allowed",
+    };
   }
 
-  const reserved = ["admin", "doctor", "support","user","unknown","known","autonomous"];
+  if (username.length < 4) {
+    return {
+      valid: false,
+      message: "Username must be at least 4 characters",
+    };
+  }
+
+  if (username.length > 15) {
+    return {
+      valid: false,
+      message: "Username cannot exceed 15 characters",
+    };
+  }
+
+
+  const reserved = ["admin", "doctor", "support", "user", "unknown", "known", "autonomous"];
   if (reserved.includes(username)) {
     return { valid: false, message: "This username is reserved" };
   }
 
   const exists = await userModel.findOne({ username });
   if (exists) {
-    return { valid: false, message: "This username is already taken"};
+    return { valid: false, message: "This username is already taken" };
   }
 
   return { valid: true, username };

@@ -121,7 +121,7 @@ export const loginService = async ({ identifier, password }, res) => {
         : await userModel.findOne({ username: identifier });
 
     if (!user) {
-        return { success: false, message: "Invalid credentials" };
+        return { success: false, message: "This account is not registered" };
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -202,7 +202,10 @@ export const forgotPasswordService = async ({ identifier }) => {
         : await userModel.findOne({ username: identifier });
 
     if (!user) {
-        return { success: true, message: "No user found" };
+        return { 
+            success: false, 
+            message: "Account does not exist" 
+        };
     }
 
     if (
