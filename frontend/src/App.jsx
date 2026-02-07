@@ -1,5 +1,6 @@
-import React, { useContext, lazy, Suspense } from "react";
+import React, { useContext,useEffect, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+import socket from "./socket";
 
 import { AppContext } from "./context/AppContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -51,6 +52,16 @@ const App = () => {
   if (initialLoading) {
     return <Loader />;
   }
+
+   useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to socket:", socket.id);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from socket");
+    });
+  }, []);
 
   return (
     <>

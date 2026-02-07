@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import 'dotenv/config';
 import connectDB from './config/mongodb.js';
+import https from "http";
 
 import adminRouter from './routes/adminRoute.js';
 import doctorRouter from './routes/doctorRoute.js';
@@ -11,6 +12,9 @@ import bedRoutes from "./routes/bedRoutes.js";
 import paymentRoute from "./routes/paymentRoute.js";
 import supportRoute from "./routes/supportRoute.js";
 import reviewRoutes from "./routes/reviewRoute.js";
+
+import { initSocket }  from "./socket/index.js";
+
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -82,6 +86,14 @@ app.get("/health", (req, res) => {
 
 
 // start
-app.listen(port, () => {
-  console.log(`Server Started on port ${port}`);
+// app.listen(port, () => {
+//   console.log(`Server Started on port ${port}`);
+// });
+
+const server = https.createServer(app);
+
+initSocket(server);
+
+server.listen(port, () => {
+  console.log(`server and socket running on port ${port}`);
 });
