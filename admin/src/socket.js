@@ -1,15 +1,11 @@
 import { io } from "socket.io-client";
 
-const token = document.cookie
-  ?.split("; ")
-  ?.find(c => c.startsWith("token="))
-  ?.split("=")[1];
-
 const socket = io(import.meta.env.VITE_BACKEND_URL, {
   withCredentials: true,
   auth: {
-    token,
+    dtoken: localStorage.getItem("dtoken"),
   },
 });
+
 
 export default socket;

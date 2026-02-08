@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import socket from "./socket";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Admin/Dashboard";
@@ -44,6 +45,35 @@ const App = () => {
       else if (dToken) navigate("/doctor/dashboard");
     }
   }, [aToken, dToken, navigate]);
+
+
+useEffect(() => {
+  if (!dToken) return;
+
+  socket.auth = { dtoken: dToken };
+
+  if (!socket.connected) {
+    socket.connect();
+  }
+
+  const onConnect = () => {
+    console.log("Doctor socket connected:", socket.id);
+  };
+
+  const onDisconnect = (reason) => {
+    console.log("Doctor socket disconnected:", reason);
+  };
+
+  socket.on("connect", onConnect);
+  socket.on("disconnect", onDisconnect);
+
+  return () => {
+    socket.off("connect", onConnect);
+    socket.off("disconnect", onDisconnect);
+  };
+}, [dToken]);
+
+
 
   // Loader before showing layout
   if (isAdminLoading || isAdminPageLoading) {

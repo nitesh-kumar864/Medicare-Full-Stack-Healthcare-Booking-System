@@ -43,25 +43,37 @@ const VerifyOtp = lazy(() => import("./pages/VerifyOtp"));
 
 
 
-
-
 const App = () => {
-  const { initialLoading } = useContext(AppContext);
+  const { initialLoading, token } = useContext(AppContext);
+
+   useEffect(() => {
+    if (!token) return;
+
+    socket.auth = { token };
+    socket.connect();
+
+    const onConnect = () => {
+      console.log("Connected to socket:", socket.id);
+    };
+
+    const onDisconnect = () => {
+      console.log("Disconnected from socket");
+    };
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.disconnect();
+    };
+  }, [token]);
 
   // App-level loader (token check, cold start)
   if (initialLoading) {
     return <Loader />;
   }
-
-   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Connected to socket:", socket.id);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Disconnected from socket");
-    });
-  }, []);
 
   return (
     <>
