@@ -2,21 +2,33 @@ import jwt from "jsonwebtoken";
 
 export const socketAuth = (socket, next) => {
   try {
-    const { dtoken } = socket.handshake.auth || {};
+    const token = socket.handshake.auth?.token;
+    const dtoken = socket.handshake.auth?.dtoken;
 
-    if (!dtoken) {
-      return next(new Error("Doctor token missing"));
+    if (!token && !dtoken) {
+      return next(new Error("Not authenticated"));
     }
 
-    const decoded = jwt.verify(dtoken, process.env.JWT_SECRET);
+    // USER
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      socket.user = {
+        id: decoded.userId,
+        role: "user",
+      };
+      return next();
+    }
 
-    socket.user = {
-      id: decoded.id,
-      role: "doctor",
-    };
-
-    return next();
-  } catch (error) {
-    return next(new Error("Socket authentication failed"));
+    // DOCTOR
+    if (dtoken) {
+      const decoded = jwt.verify(dtoken, process.env.JWT_SECRET);
+      socket.user = {
+        id: decoded.id,
+        role: "doctor",
+      };
+      return next();
+    }
+  } catch (err) {
+    return next(new Error("Invalid token"));
   }
 };

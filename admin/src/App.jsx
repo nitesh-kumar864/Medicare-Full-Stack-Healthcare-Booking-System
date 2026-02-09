@@ -18,6 +18,7 @@ import BedManager from "./pages/Admin/BedManager";
 
 import DoctorDetails from "./pages/Admin/DoctorDetails";
 import EditDoctor from "./pages/Admin/EditDoctor";
+import ChatPage from "./pages/Doctor/ChatPage";
 
 
 import { ToastContainer } from "react-toastify";
@@ -120,6 +121,8 @@ useEffect(() => {
             <Route path="dashboard" element={<DoctorDashboard />} />
             <Route path="appointments" element={<DoctorAppointment />} />
             <Route path="profile" element={<DoctorProfile />} />
+            <Route path="/doctor/chat/:appointmentId" element={<ChatPage />} />
+
 
           </Route>
 

@@ -3,6 +3,9 @@ import { DoctorContext } from "../../context/DoctorContext";
 import { AppContext } from "../../context/AppContext";
 import { assets } from "../../assets/assets";
 import Loader from "../../components/Loader";
+import { MessageCircle } from "lucide-react";
+import { joinDoctorRoom } from "../../chat/joinRoom";
+import { useNavigate } from "react-router-dom";
 
 const DoctorAppointment = () => {
   const {
@@ -13,6 +16,9 @@ const DoctorAppointment = () => {
     cancelAppointment,
     isPageLoading,
   } = useContext(DoctorContext);
+
+  const navigate = useNavigate();
+
 
   const { calculateAge, slotDateFormat } = useContext(AppContext);
 
@@ -25,8 +31,7 @@ const DoctorAppointment = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    return appointments.filter((item) => {
-
+    const filtered = appointments.filter((item) => {
       // Convert " 24_11_2025" → JS date
       const [day, month, year] = item.slotDate.trim().split("_");
       const apptDate = new Date(`${year}-${month}-${day}`);
@@ -52,6 +57,17 @@ const DoctorAppointment = () => {
       }
 
       return true; // ALL
+    });
+
+    return filtered.sort((a, b) => {
+      const dateA = new Date(
+        `${a.slotDate.split("_").reverse().join("-")} ${a.slotTime}`
+      );
+      const dateB = new Date(
+        `${b.slotDate.split("_").reverse().join("-")} ${b.slotTime}`
+      );
+
+      return dateB - dateA;
     });
   };
 
@@ -102,8 +118,8 @@ const DoctorAppointment = () => {
           <p>Gender</p>
           <p>Age</p>
           <p>Date & Time</p>
-          <p>Fees</p>
           <p>Action</p>
+          <p>Messages</p>
         </div>
 
         {/* TABLE ROWS */}
@@ -145,7 +161,6 @@ const DoctorAppointment = () => {
 
                 <p><b>Date:</b> {slotDateFormat(item.slotDate)}</p>
                 <p><b>Time:</b> {item.slotTime}</p>
-                <p><b>Fees:</b> ₹{item.doctorData.fees}</p>
               </div>
 
               <div>
@@ -168,12 +183,26 @@ const DoctorAppointment = () => {
                   </div>
                 )}
               </div>
+              {!item.cancelled &&
+                (item.payment === true || item.isCompleted === true) && (
+                  <button
+                    onClick={() => {
+                      joinDoctorRoom(item._id);
+                      navigate(`/doctor/chat/${item._id}`);
+                    }}
+                    className="flex items-center gap-1 px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
+                  >
+                    <MessageCircle size={16} />
+                    Chat
+                  </button>
+                )}
             </div>
 
             {/* DESKTOP TABLE ROW */}
             <div className="max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500">
 
-              <p>{index + 1}</p>
+              <p>{filteredList.length - index}</p>
+
 
               <div className="flex items-center gap-2">
                 <img
@@ -186,8 +215,8 @@ const DoctorAppointment = () => {
               {item.paymentMethod !== "none" ? (
                 <p
                   className={`text-[11px] px-2 py-0.5 rounded-full font-medium w-fit ${item.paymentMethod === "online"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-yellow-100 text-yellow-600"
+                    ? "bg-green-100 text-green-600"
+                    : "bg-yellow-100 text-yellow-600"
                     }`}
                 >
                   {item.paymentMethod === "online" ? "Online" : "Cash"}
@@ -201,8 +230,6 @@ const DoctorAppointment = () => {
               <p>{calculateAge(item.userData.dob)}</p>
 
               <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
-
-              <p>₹{item.doctorData.fees}</p>
 
               {item.cancelled ? (
                 <p className="text-red-600 font-medium">Cancelled</p>
@@ -222,6 +249,23 @@ const DoctorAppointment = () => {
                   />
                 </div>
               )}
+
+              {/* CHAT */}
+
+              {!item.cancelled &&
+                (item.payment === true || item.isCompleted === true) && (
+                  <button
+                    onClick={() => {
+                      joinDoctorRoom(item._id);
+                      navigate(`/doctor/chat/${item._id}`);
+                    }}
+                    className="flex items-center gap-1 px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
+                  >
+                    <MessageCircle size={16} />
+                    Chat
+                  </button>
+                )}
+
             </div>
 
           </div>

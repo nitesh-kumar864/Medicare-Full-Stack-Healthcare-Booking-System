@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   Calendar,
   Clock,
@@ -7,7 +9,11 @@ import {
   Stethoscope,
   XCircle,
   CreditCard,
+  MessageCircle
 } from "lucide-react";
+import { joinAppointmentRoom } from "../../chat/joinRoom";
+
+
 
 const AppointmentCard = ({
   item,
@@ -25,6 +31,8 @@ const AppointmentCard = ({
     cancelled: "bg-red-100 text-red-800 border-red-200",
     completed: "bg-green-100 text-green-800 border-green-200",
   };
+
+
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
@@ -112,6 +120,22 @@ const AppointmentCard = ({
                 </button>
               )}
 
+              {/* CHAT BUTTON */}
+              {item.status !== "cancelled" &&
+                (item.payment === true || item.isCompleted === true) && (
+                  <button
+                    onClick={() => {
+                      joinAppointmentRoom(item._id)
+                      navigate(`/chat/${item._id}`)
+                    }}
+                    className="px-6 py-3 bg-blue-50 text-blue-700 border rounded-xl flex gap-2"
+                  >
+                    <MessageCircle size={20} />
+                    Chat
+                  </button>
+
+                )}
+
               {/* Cancel Appointment */}
               {item.status !== "cancelled" &&
                 item.status !== "completed" && (
@@ -130,12 +154,12 @@ const AppointmentCard = ({
       {/* Status Bar */}
       <div
         className={`h-1.5 ${status.type === "confirmed"
-            ? "bg-green-400"
-            : status.type === "unpaid"
-              ? "bg-yellow-400"
-              : status.type === "cancelled"
-                ? "bg-red-400"
-                : "bg-blue-400"
+          ? "bg-green-400"
+          : status.type === "unpaid"
+            ? "bg-yellow-400"
+            : status.type === "cancelled"
+              ? "bg-red-400"
+              : "bg-blue-400"
           }`}
       ></div>
     </div>
