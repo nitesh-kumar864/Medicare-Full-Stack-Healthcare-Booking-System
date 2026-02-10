@@ -8,40 +8,74 @@ const ChatPage = () => {
   const { appointmentId } = useParams();
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const [typingStatus, setTypingStatus] = useState(null);
 
   const scrollRef = useRef(null);
 
-  const fetchMessages = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/chat/${appointmentId}`,
-        { withCredentials: true }
-      );
-      if (res.data.success) {
-        setMessages(res.data.messages);
-      }
-    } catch (err) {
-      console.error("Fetch messages error", err);
-    }
-  };
-
   useEffect(() => {
     if (!appointmentId) return;
-    if (!socket.connected) socket.connect();
 
+    const fetchMsg = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/chat/${appointmentId}`,
+          { withCredentials: true }
+        );
+
+        if (res.data.success) {
+          setMessages(res.data.messages);
+        }
+      } catch (err) {
+        console.error("Fetch messages error", err);
+      }
+
+    };
+
+    fetchMsg();
+    // socket setup 
+    if (!socket.connected) socket.connect();
     socket.emit("join-room", { appointmentId });
-    fetchMessages();
+
+    // We emit this immediately so existing unread messages get marked
+    socket.emit("mark-seen", { appointmentId });
+
+    const handleTypingStatus = ({ role, typing }) => {
+      setTypingStatus(typing ? role : null);
+    };
 
     const handleNewMessage = (msg) => {
       setMessages((prev) => [...prev, msg]);
+
+      // If the message is NOT from me, I have now seen it.
+      if (msg.senderRole !== socket.user?.role) {
+        socket.emit("mark-seen", { appointmentId });
+      }
     };
 
+    const handleMessagesSeen = ({ seenBy }) => {
+      setMessages((prev) =>
+        prev.map((m) => {
+
+          //if Doctor saw it, update User's messages to seen
+          if (m.senderRole !== seenBy) {
+            return { ...m, seen: true };
+          }
+          return m;
+        })
+      );
+    };
+
+    socket.on("typing-status", handleTypingStatus);
     socket.on("new-message", handleNewMessage);
+    socket.on("messages-seen", handleMessagesSeen);
 
     return () => {
+      socket.off("typing-status", handleTypingStatus);
       socket.off("new-message", handleNewMessage);
+      socket.off("messages-seen", handleMessagesSeen);
     };
   }, [appointmentId]);
+
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -54,7 +88,11 @@ const ChatPage = () => {
 
   const sendMessage = () => {
     if (!text.trim()) return;
-    socket.emit("send-message", { appointmentId, text });
+    socket.emit("send-message", {
+      appointmentId,
+      text
+    });
+    socket.emit("typing-stop", { appointmentId });
     setText("");
   };
 
@@ -90,31 +128,39 @@ const ChatPage = () => {
               return (
                 <div
                   key={i}
-                  className={`flex ${
-                    isDoctor ? "justify-start" : "justify-end"
-                  }`}
+                  className={`flex ${isDoctor ? "justify-start" : "justify-end"
+                    }`}
                 >
                   <div className="max-w-[85%] md:max-w-[70%]">
                     <div
-                      className={`px-4 py-3 rounded-2xl shadow-sm text-sm ${
-                        isDoctor
-                          ? "bg-white text-gray-800 border rounded-bl-none"
-                          : "bg-blue-600 text-white rounded-br-none"
-                      }`}
+                      className={`px-4 py-3 rounded-2xl shadow-sm text-sm ${isDoctor
+                        ? "bg-white text-gray-800 border rounded-bl-none"
+                        : "bg-blue-600 text-white rounded-br-none"
+                        }`}
                     >
+
                       {m.text}
                     </div>
-                    <p
-                      className={`text-[10px] mt-1 opacity-60 ${
-                        isDoctor ? "text-left" : "text-right"
-                      }`}
-                    >
-                      {new Date(
-                        m.createdAt || Date.now()
-                      ).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      <p
+                        className={`text-xs mt-1 opacity-60 ${isDoctor ? "text-left" : "text-right"
+                          }`}
+                      >
+                        {/* Time */}
+                        {new Date(m.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+
+                        {/* Ticks with Gap (ml-2) and Checkmark Logic */}
+                        {m.senderRole !== "doctor" && (
+                          <span
+                            className={`ml-2 text-sm ${m.seen ? "text-green-600 font-bold" : "text-gray-400"
+                              }`}
+                          >
+                            {m.seen ? "✓✓" : "✓"}
+                          </span>
+                        )}
+                     
                     </p>
                   </div>
                 </div>
@@ -125,14 +171,37 @@ const ChatPage = () => {
 
         {/* INPUT*/}
         <div className="p-4 bg-white border-t flex-shrink-0">
+          {typingStatus && (
+            <p className="text-sm text-green-600 font-bold px-4 pb-1">
+              {
+                typingStatus === 'doctor'
+                  ? "doctor is typing"
+                  : "User is typing"
+              }
+            </p>
+          )}
           <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-4 py-2">
             <input
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+                socket.emit("typing-start", { appointmentId });
+
+                if (e.target.value === "") {
+                  socket.emit("typing-stop", { appointmentId });
+                }
+
+              }}
+
+              onBlur={() => {
+                socket.emit("typing-stop", { appointmentId });
+              }}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               className="flex-1 bg-transparent outline-none text-gray-700"
               placeholder="Write your message..."
             />
+
+
             <button
               onClick={sendMessage}
               disabled={!text.trim()}

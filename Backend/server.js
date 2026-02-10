@@ -12,7 +12,7 @@ import bedRoutes from "./routes/bedRoutes.js";
 import paymentRoute from "./routes/paymentRoute.js";
 import supportRoute from "./routes/supportRoute.js";
 import reviewRoutes from "./routes/reviewRoute.js";
-import chatRoutes from "./routes/chat.route.js";
+import chatRoutes from "./routes/chatRoute.js";
 
 import { initSocket }  from "./socket/index.js";
 

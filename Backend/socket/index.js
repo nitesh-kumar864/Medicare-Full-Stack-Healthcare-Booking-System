@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { socketAuth } from "./auth.socket.js";
 import { registerRoomHandlers } from "./room.socket.js";
 import { registerMessageHandlers } from "./message.socket.js";
+import { RegisterTypingHandlers } from "./typing.socket.js";
 
 let io;
 
@@ -32,6 +33,7 @@ export const initSocket = (httpServer) => {
 
     registerRoomHandlers(io, socket);
     registerMessageHandlers(io, socket);
+    RegisterTypingHandlers(io, socket);
 
     socket.on("disconnect", () => {
       console.log("Socket disconnected:", socket.id);
