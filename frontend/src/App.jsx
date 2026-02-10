@@ -28,12 +28,13 @@ const TermsConditions = lazy(() => import("./pages/TermsConditions"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const BedPage = lazy(() => import("./pages/BedPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const ChatPage =  lazy(() => import("./pages/ChatPage"));
+
 
 // Protected pages
 const MyProfile = lazy(() => import("./pages/MyProfile"));
 const MyAppointments = lazy(() => import("./pages/MyAppointments"));
 const MyBedBookings = lazy(() => import("./pages/MyBedBookings"));
+const ChatPage =  lazy(() => import("./pages/ChatPage"));
 
 // Auth pages
 const LoginPage = lazy(() => import("./auth/LoginPage"));
@@ -131,6 +132,15 @@ useEffect(() => {
               }
             />
 
+            <Route
+              path="/chat/:appointmentId"
+              element={
+                <ProtectedRoute>
+                  <ChatPage/>
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/appointments/:docId" element={<Appointment />} />
             <Route path="/help-center" element={<HelpCenter />} />
             <Route path="/faqs" element={<FaqPage />} />
@@ -138,7 +148,6 @@ useEffect(() => {
             <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/bed-availability" element={<BedPage />} />
-           <Route path="/chat/:appointmentId" element={<ChatPage />} />
 
 
           </Route>

@@ -58,8 +58,7 @@ const NavBar = () => {
                     { to: "/", label: "HOME" },
                     { to: "/doctors", label: "ALL DOCTORS" },
                     { to: "/about", label: "ABOUT" },
-                    { to: "/contact", label: "CONTACT" },
-                    { to: "/my-support", label: "My Queries" },
+                    { to: "/contact", label: "CONTACT US" },
                 ].map((item) => (
                     <NavLink
                         key={item.to}
@@ -232,19 +231,8 @@ const NavBar = () => {
                             `hover:text-black transition-colors ${isActive ? "text-primary border-b-2 border-primary pb-1" : ""}`
                         }
                     >
-                        Contact
+                        Contact Us
                     </NavLink>
-
-                    <NavLink
-                        onClick={() => setShowMenu(false)}
-                        to="/my-support"
-                        className={({ isActive }) =>
-                            `hover:text-black transition-colors ${isActive ? "text-primary border-b-2 border-primary pb-1" : ""}`
-                        }
-                    >
-                        My Queries
-                    </NavLink>
-
                     <li
                         onClick={() => {
                             window.open("https://medicare-admin-a2zd.onrender.com", "_blank");
