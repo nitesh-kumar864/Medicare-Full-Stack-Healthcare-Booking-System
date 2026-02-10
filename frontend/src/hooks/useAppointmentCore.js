@@ -220,8 +220,8 @@ const useAppointmentCore = ({
     setComment,
 
     submitReview,
-    editReview,
-    deleteReview,
+    handleEditReview: editReview,
+    handleDeleteReview: deleteReview,
     bookAppointment,
     handleConfirmPayment,
     handleCancelPayment,
