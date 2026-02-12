@@ -79,3 +79,4 @@ export const appointmentCancelService = async (
     message: "Appointment cancelled successfully",
   };
 };
+

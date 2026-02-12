@@ -98,7 +98,7 @@ export const verifySignupOtpService = async ({ name, username, email, password, 
 
     await otpModel.deleteOne({ email });
 
-    const token = generateTokenAndSetCookies(res, user._id);
+    const token = generateTokenAndSetCookies(res, user._id, "user");
 
     return {
         success: true,
@@ -130,7 +130,7 @@ export const loginService = async ({ identifier, password }, res) => {
         return { success: false, message: "Invalid credentials" };
     }
 
-    const token = generateTokenAndSetCookies(res, user._id);
+    const token = generateTokenAndSetCookies(res, user._id, "user");
 
     return {
         success: true,
@@ -176,7 +176,7 @@ export const googleLoginService = async ({ credential }, res) => {
         });
     }
 
-    const token = generateTokenAndSetCookies(res, user._id);
+    const token = generateTokenAndSetCookies(res, user._id, "user");
 
     return {
         success: true,

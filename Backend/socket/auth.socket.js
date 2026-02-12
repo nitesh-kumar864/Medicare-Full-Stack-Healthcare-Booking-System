@@ -13,7 +13,7 @@ export const socketAuth = (socket, next) => {
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       socket.user = {
-        id: decoded.userId,
+        id:  decoded.id,
         role: "user",
       };
       return next();
