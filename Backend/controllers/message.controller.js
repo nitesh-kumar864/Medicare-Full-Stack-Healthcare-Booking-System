@@ -1,3 +1,4 @@
+import appointmentModel from "../models/appointmentModel.js";
 import {
   getMessageByAppointmentService,
   getUnreadCountService
@@ -9,10 +10,25 @@ export const getMessageByAppointment = async (req, res) => {
 
     const messages = await getMessageByAppointmentService(appointmentId);
 
+    // Fetch appointment with doctorData + userData
+    const appointment = await appointmentModel
+      .findById(appointmentId)
+      .select("doctorData userData");
+
+    if (!appointment) {
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found",
+      });
+    }
+
     return res.json({
       success: true,
       messages,
+      doctor: appointment.doctorData,
+      user: appointment.userData,
     });
+
   } catch (error) {
     console.log("Get message error:", error);
     return res.status(500).json({
@@ -21,6 +37,7 @@ export const getMessageByAppointment = async (req, res) => {
     });
   }
 };
+
 
 
 export const getUnreadCount = async (req, res) => {

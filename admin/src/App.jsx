@@ -18,7 +18,7 @@ import BedManager from "./pages/Admin/BedManager";
 
 import DoctorDetails from "./pages/Admin/DoctorDetails";
 import EditDoctor from "./pages/Admin/EditDoctor";
-import ChatPage from "./pages/Doctor/ChatPage";
+import DoctorChatPage from "./pages/Doctor/DoctorChatPage";
 
 
 import { ToastContainer } from "react-toastify";
@@ -48,31 +48,31 @@ const App = () => {
   }, [aToken, dToken, navigate]);
 
 
-useEffect(() => {
-  if (!dToken) return;
+  useEffect(() => {
+    if (!dToken) return;
 
-  socket.auth = { dtoken: dToken };
+    socket.auth = { dtoken: dToken };
 
-  if (!socket.connected) {
-    socket.connect();
-  }
+    if (!socket.connected) {
+      socket.connect();
+    }
 
-  const onConnect = () => {
-    console.log("Doctor socket connected:", socket.id);
-  };
+    const onConnect = () => {
+      console.log("Doctor socket connected:", socket.id);
+    };
 
-  const onDisconnect = (reason) => {
-    console.log("Doctor socket disconnected:", reason);
-  };
+    const onDisconnect = (reason) => {
+      console.log("Doctor socket disconnected:", reason);
+    };
 
-  socket.on("connect", onConnect);
-  socket.on("disconnect", onDisconnect);
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
 
-  return () => {
-    socket.off("connect", onConnect);
-    socket.off("disconnect", onDisconnect);
-  };
-}, [dToken]);
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
+  }, [dToken]);
 
 
 
@@ -121,7 +121,7 @@ useEffect(() => {
             <Route path="dashboard" element={<DoctorDashboard />} />
             <Route path="appointments" element={<DoctorAppointment />} />
             <Route path="profile" element={<DoctorProfile />} />
-            <Route path="/doctor/chat/:appointmentId" element={<ChatPage />} />
+            <Route path="/doctor/chat/:appointmentId" element={<DoctorChatPage />} />
 
 
           </Route>

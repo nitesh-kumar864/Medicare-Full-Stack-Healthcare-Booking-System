@@ -1,4 +1,4 @@
-import React, { useContext,useEffect, lazy, Suspense } from "react";
+import React, { useContext, useEffect, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import socket from "./socket";
 
@@ -34,7 +34,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const MyProfile = lazy(() => import("./pages/MyProfile"));
 const MyAppointments = lazy(() => import("./pages/MyAppointments"));
 const MyBedBookings = lazy(() => import("./pages/MyBedBookings"));
-const ChatPage =  lazy(() => import("./pages/ChatPage"));
+const ChatPage = lazy(() => import("./pages/ChatPage"));
 
 // Auth pages
 const LoginPage = lazy(() => import("./auth/LoginPage"));
@@ -47,24 +47,24 @@ const VerifyOtp = lazy(() => import("./pages/VerifyOtp"));
 
 const App = () => {
   const { initialLoading, token } = useContext(AppContext);
-useEffect(() => {
-  if (!token) return;
+  useEffect(() => {
+    if (!token) return;
 
-  socket.auth = { token };
-  socket.connect();
+    socket.auth = { token };
+    socket.connect();
 
-  socket.on("connect", () => {
-    console.log("User socket connected:", socket.id);
-  });
+    socket.on("connect", () => {
+      console.log("User socket connected:", socket.id);
+    });
 
-  socket.on("disconnect", () => {
-    console.log("User socket disconnected");
-  });
+    socket.on("disconnect", () => {
+      console.log("User socket disconnected");
+    });
 
-  return () => {
-    socket.disconnect();
-  };
-}, [token]);
+    return () => {
+      socket.disconnect();
+    };
+  }, [token]);
 
 
   // App-level loader (token check, cold start)
@@ -127,16 +127,7 @@ useEffect(() => {
               path="/my-support"
               element={
                 <ProtectedRoute>
-                  <MySupport/>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/chat/:appointmentId"
-              element={
-                <ProtectedRoute>
-                  <ChatPage/>
+                  <MySupport />
                 </ProtectedRoute>
               }
             />
@@ -158,6 +149,15 @@ useEffect(() => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
+
+          <Route
+            path="/chat/:appointmentId"
+            element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
