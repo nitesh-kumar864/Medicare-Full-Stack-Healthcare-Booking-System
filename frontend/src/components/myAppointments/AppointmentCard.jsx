@@ -9,11 +9,9 @@ import {
   Stethoscope,
   XCircle,
   CreditCard,
-  MessageCircle
+  MessageSquare,
 } from "lucide-react";
 import { joinAppointmentRoom } from "../../chat/joinRoom";
-
-
 
 const AppointmentCard = ({
   item,
@@ -23,6 +21,7 @@ const AppointmentCard = ({
   handlePayNow,
   cancelAppointment,
   navigate,
+  unreadMap
 }) => {
   /* Status Badge Styles */
   const statusStyles = {
@@ -32,8 +31,7 @@ const AppointmentCard = ({
     completed: "bg-green-100 text-green-800 border-green-200",
   };
 
-
-
+  const unreadCount = unreadMap?.[item._id] || 0;
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
       <div className="p-6">
@@ -121,19 +119,26 @@ const AppointmentCard = ({
               )}
 
               {/* CHAT BUTTON */}
-              {item.status !== "cancelled" &&
+              {!item.cancelled &&
                 (item.payment === true || item.isCompleted === true) && (
-                  <button
-                    onClick={() => {
-                      joinAppointmentRoom(item._id)
-                      navigate(`/chat/${item._id}`)
-                    }}
-                    className="px-6 py-3 bg-blue-50 text-blue-700 border rounded-xl flex gap-2"
-                  >
-                    <MessageCircle size={20} />
-                    Chat
-                  </button>
+                  <div className="relative w-fit">
+                    <button
+                      onClick={() => {
+                        joinAppointmentRoom(item._id);
+                        navigate(`/chat/${item._id}`);
+                      }}
+                      className="px-6 py-3 bg-gradient-to-r from-green-400 to-green-950 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2 relative"
+                    >
+                      <MessageSquare size={20} />
+                      Chat
 
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-2 -right-2 min-w-[20px] h-5 px-1 text-xs font-bold flex items-center justify-center text-white bg-red-500 rounded-full shadow">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 )}
 
               {/* Cancel Appointment */}

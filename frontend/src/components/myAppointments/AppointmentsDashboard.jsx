@@ -14,6 +14,7 @@ const AppointmentsDashboard = ({
   cancelAppointment,
   handlePayNow,
   getAppointmentStatus,
+  unreadMap,
 }) => {
   return (
     <>
@@ -105,6 +106,7 @@ const AppointmentsDashboard = ({
                 cancelAppointment={cancelAppointment}
                 handlePayNow={handlePayNow}
                 navigate={navigate}
+                unreadMap={unreadMap}
               />
             );
           })}
@@ -119,8 +121,8 @@ const FilterBtn = ({ active, onClick, label }) => (
   <button
     onClick={onClick}
     className={`px-4 py-2 rounded-xl transition-all ${active
-        ? "bg-primary text-white"
-        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      ? "bg-primary text-white"
+      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
   >
     {label}

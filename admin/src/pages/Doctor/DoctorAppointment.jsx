@@ -6,6 +6,8 @@ import Loader from "../../components/Loader";
 import { MessageCircle } from "lucide-react";
 import { joinDoctorRoom } from "../../chat/joinRoom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import socket from "../../socket";
 
 const DoctorAppointment = () => {
   const {
@@ -19,10 +21,11 @@ const DoctorAppointment = () => {
 
   const navigate = useNavigate();
 
-
   const { calculateAge, slotDateFormat } = useContext(AppContext);
 
   const [filterType, setFilterType] = useState("all");
+  const [unreadMap, setUnreadMap] = useState({});
+
 
   // ---------- FILTER LOGIC ----------
   const filterAppointments = () => {
@@ -70,6 +73,72 @@ const DoctorAppointment = () => {
       return dateB - dateA;
     });
   };
+
+  useEffect(() => {
+    if (!appointments) return;
+
+    const loadUnreadCounts = async () => {
+
+      const temp = {};
+
+      for (let appt of appointments) {
+        try {
+          const res = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/chat/unread/${appt._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${dToken}`,
+              },
+            }
+          );
+
+          console.log("Unread API Response for", appt._id, ":", res.data);
+
+          temp[appt._id] = res.data.count || 0;
+
+        } catch (err) {
+          console.log("Unread fetch error", err);
+        }
+      }
+
+      console.log("Final unreadMap:", temp);
+
+      setUnreadMap(temp);
+    };
+
+    loadUnreadCounts();
+
+  }, [appointments]);
+
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = (msg) => {
+      if (msg.senderRole === "user") {
+        setUnreadMap((prev) => ({
+          ...prev,
+          [msg.appointmentId]:
+            (prev[msg.appointmentId] || 0) + 1,
+        }));
+      }
+    };
+
+    const handleMessagesSeen = ({ appointmentId }) => {
+      setUnreadMap((prev) => ({
+        ...prev,
+        [appointmentId]: 0,
+      }));
+    };
+
+    socket.on("new-message", handleNewMessage);
+    socket.on("messages-seen", handleMessagesSeen);
+
+    return () => {
+      socket.off("new-message", handleNewMessage);
+      socket.off("messages-seen", handleMessagesSeen);
+    };
+  }, [dToken]);
 
   useEffect(() => {
     if (dToken) {
@@ -127,49 +196,127 @@ const DoctorAppointment = () => {
           <p className="text-center py-10 text-gray-500">No appointments found.</p>
         )}
 
-        {filteredList.map((item, index) => (
-          <div key={index} className="border-b py-4 px-4 hover:bg-gray-50">
+        {filteredList.map((item, index) => {
 
-            {/* MOBILE CARD VIEW */}
-            <div className="sm:hidden flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <img
-                  src={item.userData.image}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-medium">{item.userData.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {calculateAge(item.userData.dob)} years old
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Gender: {item.userData.gender}
-                  </p>
+          const unreadCount = unreadMap[item._id] || 0;
+
+          return (
+
+            <div key={index} className="border-b py-4 px-4 hover:bg-gray-50">
+
+              {/* MOBILE CARD VIEW */}
+              <div className="sm:hidden flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={item.userData.image}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="font-medium">{item.userData.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {calculateAge(item.userData.dob)} years old
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Gender: {item.userData.gender}
+                    </p>
+                  </div>
                 </div>
+
+                <div className="text-sm text-gray-600">
+                  {(item.payment === true || item.isCompleted === true) ? (
+                    <p className={`text-[11px] px-2 py-0.5 rounded-full font-medium w-fit ${item.payment ? "bg-green-100 text-green-600" : "bg-yellow-100 text-yellow-600"
+                      }`}>
+                      {item.payment ? "Online" : "Cash"}
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 text-xs italic">--</p>
+                  )}
+
+                  <p><b>Date:</b> {slotDateFormat(item.slotDate)}</p>
+                  <p><b>Time:</b> {item.slotTime}</p>
+                </div>
+
+                <div>
+                  {item.cancelled ? (
+                    <p className="text-red-600 font-medium">Cancelled</p>
+                  ) : item.payment || item.isCompleted ? (
+                    <p className="text-green-600 font-medium">Completed</p>
+                  ) : (
+                    <div className="flex gap-5 mt-1">
+                      <img
+                        src={assets.cancel_icon}
+                        className="w-10 cursor-pointer"
+                        onClick={() => cancelAppointment(item._id)}
+                      />
+                      <img
+                        src={assets.tick_icon}
+                        className="w-10 cursor-pointer"
+                        onClick={() => completeAppointment(item._id)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {!item.cancelled &&
+                  (item.payment === true || item.isCompleted === true) && (
+                    <div className="relative w-fit">
+                      <button
+                        onClick={() => {
+                          joinDoctorRoom(item._id);
+                          navigate(`/chat/${item._id}`);
+                        }}
+                       className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2 relative"
+                      >
+                        <MessageCircle size={16} />
+                        Chat
+
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-bold text-white bg-red-500 rounded-full">
+                            {unreadCount}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  )}
               </div>
 
-              <div className="text-sm text-gray-600">
 
-                {(item.payment === true || item.isCompleted === true) ? (
-                  <p className={`text-[11px] px-2 py-0.5 rounded-full font-medium w-fit ${item.payment ? "bg-green-100 text-green-600" : "bg-yellow-100 text-yellow-600"
+              {/* DESKTOP TABLE ROW */}
+              <div className="max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500">
+
+                <p>{filteredList.length - index}</p>
+
+                <div className="flex items-center gap-2">
+                  <img
+                    src={item.userData.image}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <p>{item.userData.name}</p>
+                </div>
+
+                {item.paymentMethod !== "none" ? (
+                  <p className={`text-[11px] px-2 py-0.5 rounded-full font-medium w-fit ${item.paymentMethod === "online"
+                    ? "bg-green-100 text-green-600"
+                    : "bg-yellow-100 text-yellow-600"
                     }`}>
-                    {item.payment ? "Online" : "Cash"}
+                    {item.paymentMethod === "online" ? "Online" : "Cash"}
                   </p>
                 ) : (
                   <p className="text-gray-400 text-xs italic">--</p>
                 )}
 
-                <p><b>Date:</b> {slotDateFormat(item.slotDate)}</p>
-                <p><b>Time:</b> {item.slotTime}</p>
-              </div>
+                <p>{item.userData.gender}</p>
 
-              <div>
+                <p>{calculateAge(item.userData.dob)}</p>
+
+                <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
+
                 {item.cancelled ? (
                   <p className="text-red-600 font-medium">Cancelled</p>
                 ) : item.payment || item.isCompleted ? (
                   <p className="text-green-600 font-medium">Completed</p>
                 ) : (
-                  <div className="flex gap-5 mt-1">
+                  <div className="flex">
                     <img
                       src={assets.cancel_icon}
                       className="w-10 cursor-pointer"
@@ -182,94 +329,36 @@ const DoctorAppointment = () => {
                     />
                   </div>
                 )}
+
+                {!item.cancelled &&
+                  (item.payment === true || item.isCompleted === true) && (
+                    <div className="relative w-fit">
+                      <button
+                        onClick={() => {
+                          joinDoctorRoom(item._id);
+                          navigate(`/doctor/chat/${item._id}`);
+                        }}
+                        className="flex items-center gap-1 px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100 relative"
+                      >
+                        <MessageCircle size={16} />
+                        Chat
+
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-bold text-white bg-red-500 rounded-full">
+                            {unreadCount}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
               </div>
-              {!item.cancelled &&
-                (item.payment === true || item.isCompleted === true) && (
-                  <button
-                    onClick={() => {
-                      joinDoctorRoom(item._id);
-                      navigate(`/doctor/chat/${item._id}`);
-                    }}
-                    className="flex items-center gap-1 px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
-                  >
-                    <MessageCircle size={16} />
-                    Chat
-                  </button>
-                )}
-            </div>
-
-            {/* DESKTOP TABLE ROW */}
-            <div className="max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500">
-
-              <p>{filteredList.length - index}</p>
-
-
-              <div className="flex items-center gap-2">
-                <img
-                  src={item.userData.image}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <p>{item.userData.name}</p>
-              </div>
-
-              {item.paymentMethod !== "none" ? (
-                <p
-                  className={`text-[11px] px-2 py-0.5 rounded-full font-medium w-fit ${item.paymentMethod === "online"
-                    ? "bg-green-100 text-green-600"
-                    : "bg-yellow-100 text-yellow-600"
-                    }`}
-                >
-                  {item.paymentMethod === "online" ? "Online" : "Cash"}
-                </p>
-              ) : (
-                <p className="text-gray-400 text-xs italic">--</p>
-              )}
-
-              <p>{item.userData.gender}</p>
-
-              <p>{calculateAge(item.userData.dob)}</p>
-
-              <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
-
-              {item.cancelled ? (
-                <p className="text-red-600 font-medium">Cancelled</p>
-              ) : item.payment || item.isCompleted ? (
-                <p className="text-green-600 font-medium">Completed</p>
-              ) : (
-                <div className="flex">
-                  <img
-                    src={assets.cancel_icon}
-                    className="w-10 cursor-pointer"
-                    onClick={() => cancelAppointment(item._id)}
-                  />
-                  <img
-                    src={assets.tick_icon}
-                    className="w-10 cursor-pointer"
-                    onClick={() => completeAppointment(item._id)}
-                  />
-                </div>
-              )}
-
-              {/* CHAT */}
-
-              {!item.cancelled &&
-                (item.payment === true || item.isCompleted === true) && (
-                  <button
-                    onClick={() => {
-                      joinDoctorRoom(item._id);
-                      navigate(`/doctor/chat/${item._id}`);
-                    }}
-                    className="flex items-center gap-1 px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
-                  >
-                    <MessageCircle size={16} />
-                    Chat
-                  </button>
-                )}
 
             </div>
 
-          </div>
-        ))}
+          );
+        })}
+
       </div>
     </div>
   );

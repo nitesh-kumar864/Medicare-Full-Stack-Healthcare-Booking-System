@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useRazorpay from "../payments/useRazorpay";
+import socket from "../socket";
 
 export const useMyAppointments = ({
   backendUrl,
@@ -12,6 +13,7 @@ export const useMyAppointments = ({
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [unreadMap, setUnreadMap] = useState({});
 
   const months = [
     "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -42,6 +44,74 @@ export const useMyAppointments = ({
     }
     setLoading(false);
   }
+
+  // socket
+  useEffect(() => {
+    if (!appointments) return;
+
+    const loadUnreadCounts = async () => {
+
+      const temp = {};
+
+      for (let appt of appointments) {
+        try {
+          const res = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/chat/unread/${appt._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+
+          );
+          console.log("Unread API Response for", appt._id, ":", res.data);
+
+          temp[appt._id] = res.data.count || 0;
+
+        } catch (err) {
+          console.log("Unread fetch error", err);
+        }
+      }
+
+      console.log("Final unreadMap:", temp);
+
+      setUnreadMap(temp);
+    };
+
+    loadUnreadCounts();
+
+  }, [appointments]);
+
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = (msg) => {
+      if (msg.senderRole === "doctor") {
+        setUnreadMap((prev) => ({
+          ...prev,
+          [msg.appointmentId]:
+            (prev[msg.appointmentId] || 0) + 1,
+        }));
+      }
+    };
+
+    const handleMessagesSeen = ({ appointmentId }) => {
+      setUnreadMap((prev) => ({
+        ...prev,
+        [appointmentId]: 0,
+      }));
+    };
+
+    socket.on("new-message", handleNewMessage);
+    socket.on("messages-seen", handleMessagesSeen);
+
+    return () => {
+      socket.off("new-message", handleNewMessage);
+      socket.off("messages-seen", handleMessagesSeen);
+    };
+  }, [token]);
+
 
   /* ================= PAYMENT ================= */
   const { startPayment } = useRazorpay(backendUrl, token, async () => {
@@ -131,5 +201,6 @@ export const useMyAppointments = ({
     handlePayNow,
     cancelAppointment,
     getAppointmentStatus,
+    unreadMap,
   };
 };

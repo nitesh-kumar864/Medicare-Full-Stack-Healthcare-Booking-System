@@ -20,6 +20,7 @@ const MyAppointments = () => {
     handlePayNow,
     cancelAppointment,
     getAppointmentStatus,
+    unreadMap,
   } = useMyAppointments({
     backendUrl,
     token,
@@ -47,6 +48,7 @@ const MyAppointments = () => {
         cancelAppointment={cancelAppointment}
         handlePayNow={handlePayNow}
         getAppointmentStatus={getAppointmentStatus}
+        unreadMap={unreadMap}
       />
     </div>
   );
