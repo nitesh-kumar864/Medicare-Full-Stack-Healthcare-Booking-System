@@ -143,11 +143,12 @@ const ChatPage = () => {
       <div className="w-full max-w-md md:max-w-3xl h-full bg-white md:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
 
         {/* --- HEADER --- */}
-        <div className="h-16 px-4 bg-white border-b flex items-center justify-between shadow-sm z-10 shrink-0">
+        <div className="h-16 px-4 bg-white border-b flex items-center justify-between shadow-sm shrink-0">
+
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate(-1)}
-              className="p-1 hover:bg-gray-100 rounded-full text-gray-600 md:hidden"
+              className="p-1 hover:bg-gray-100 rounded-full text-gray-600"
             >
               <ArrowLeft size={22} />
             </button>
@@ -176,9 +177,23 @@ const ChatPage = () => {
           </div>
 
           <div className="flex items-center gap-4 text-blue-600">
-            <button onClick={handleComingSoon} className="hover:bg-blue-50 p-2 rounded-full transition"><Phone size={20} /></button>
-            <button onClick={handleComingSoon} className="hover:bg-blue-50 p-2 rounded-full transition"><Video size={20} /></button>
-            <button onClick={handleComingSoon} className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition"><MoreVertical size={20} /></button>
+            <button
+              onClick={handleComingSoon}
+              className="hover:bg-blue-50 p-2 rounded-full transition">
+              <Phone size={20} />
+            </button>
+
+            <button
+              onClick={handleComingSoon}
+              className="hover:bg-blue-50 p-2 rounded-full transition">
+              <Video size={20} />
+            </button>
+
+            <button
+              onClick={handleComingSoon}
+              className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition">
+              <MoreVertical size={20} />
+            </button>
           </div>
         </div>
 

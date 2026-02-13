@@ -153,7 +153,7 @@ const DoctorChatPage = () => {
   };
 
 
-  let lastDate = null; 
+  let lastDate = null;
 
   return (
     <div className="fixed inset-0 top-16 bg-gray-100 flex justify-center items-center px-4 py-6">
@@ -194,15 +194,21 @@ const DoctorChatPage = () => {
           </div>
 
           <div className="flex items-center gap-4 text-blue-600">
-            <button onClick={handleComingSoon} className="hover:scale-110 transition">
+            <button
+              onClick={handleComingSoon}
+              className="hover:bg-blue-50 p-2 rounded-full transition">
               <Phone size={20} />
             </button>
 
-            <button onClick={handleComingSoon} className="hover:scale-110 transition">
+            <button
+              onClick={handleComingSoon}
+              className="hover:bg-blue-50 p-2 rounded-full transition">
               <Video size={20} />
             </button>
 
-            <button onClick={handleComingSoon} className="hover:scale-110 transition">
+            <button
+              onClick={handleComingSoon}
+              className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition">
               <MoreVertical size={20} />
             </button>
           </div>
@@ -283,14 +289,12 @@ const DoctorChatPage = () => {
           </div>
         </div>
 
-
         {/* INPUT AREA */}
         <div className="bg-gray-100 px-4 py-3 border-t flex items-center gap-2 shrink-0">
-
           <button
             onClick={handleComingSoon}
             className="text-gray-500 hover:text-gray-700 p-2 transition">
-            <Smile size={22} />
+            <Smile size={24} />
           </button>
 
           <button
@@ -298,26 +302,27 @@ const DoctorChatPage = () => {
             className="text-gray-500 hover:text-gray-700 p-2 transition hidden md:block">
             <Paperclip size={22} />
           </button>
-
-          <input
-            value={text}
-            onChange={handleTyping}
-            onBlur={() => socket.emit("typing-stop", { appointmentId })}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            className="flex-1 py-3 px-5 bg-white rounded-full focus:outline-none shadow-sm"
-            placeholder="Type a message..."
-          />
-
+          <div className="flex-1 relative">
+            <input
+              value={text}
+              onChange={handleTyping}
+              onBlur={() => socket.emit("typing-stop", { appointmentId })}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              className="w-full py-3 px-5 bg-white rounded-full border-none focus:ring-1 focus:ring-blue-500 outline-none text-gray-700 shadow-sm placeholder-gray-400"
+              placeholder="Type a message..."
+            />
+          </div>
           <button
             onClick={sendMessage}
             disabled={!text.trim()}
-            className={`p-3 rounded-full transition
-              ${text.trim()
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-          >
-            <Send size={20} />
+            className={`p-3 rounded-full shadow-md transition-all duration-200 
+          ${text.trim()
+                ? "bg-blue-600 text-white hover:bg-blue-700 scale-100"
+                : "bg-gray-300 text-gray-500 scale-95 cursor-not-allowed"}`}>
+            <Send size={20}
+              className={text.trim()
+                ? "ml-0.5" : ""}
+            />
           </button>
         </div>
 
