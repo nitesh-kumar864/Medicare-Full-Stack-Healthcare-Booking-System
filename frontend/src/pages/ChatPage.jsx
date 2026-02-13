@@ -58,6 +58,8 @@ const ChatPage = () => {
   const scrollRef = useRef(null);
 
   const [doctor, setDoctor] = useState(null);
+  const [showActions, setShowActions] = useState(false);
+
 
 
   useEffect(() => {
@@ -175,27 +177,58 @@ const ChatPage = () => {
               </span>
             </div>
           </div>
-
-          <div className="flex items-center gap-4 text-blue-600">
-            <button
-              onClick={handleComingSoon}
-              className="hover:bg-blue-50 p-2 rounded-full transition">
+          
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-4 text-blue-600">
+            <button 
+            onClick={handleComingSoon} 
+            className="hover:bg-blue-50 p-2 rounded-full">
               <Phone size={20} />
             </button>
 
+            <button 
+            onClick={handleComingSoon} 
+            className="hover:bg-blue-50 p-2 rounded-full">
+              <Video size={20} />
+            </button>
+
+            <button 
+            onClick={handleComingSoon} 
+            className="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+              <MoreVertical size={20} />
+            </button>
+          </div>
+
+          {/* Mobile */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setShowActions(!showActions)}
+              className="text-gray-500 hover:bg-gray-100 p-2 rounded-full"
+            >
+              <MoreVertical size={22} />
+            </button>
+          </div>
+        </div>
+
+        {showActions && (
+          <div className="md:hidden bg-white border-b shadow-sm flex justify-around py-2 animate-slide-down">
             <button
               onClick={handleComingSoon}
-              className="hover:bg-blue-50 p-2 rounded-full transition">
-              <Video size={20} />
+              className="flex flex-col items-center text-blue-600 text-xs"
+            >
+              <Phone size={22} />
+              Call
             </button>
 
             <button
               onClick={handleComingSoon}
-              className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition">
-              <MoreVertical size={20} />
+              className="flex flex-col items-center text-blue-600 text-xs"
+            >
+              <Video size={22} />
+              Video
             </button>
           </div>
-        </div>
+        )}
 
         {/* --- CHAT BODY --- */}
         <div className="flex-1 overflow-y-auto bg-[#e5ddd5] relative">

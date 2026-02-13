@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import 'dotenv/config';
 import connectDB from './config/mongodb.js';
 import https from "http";
+import connectCloudinary from './config/cloudinary.js'
 
 import adminRouter from './routes/adminRoute.js';
 import doctorRouter from './routes/doctorRoute.js';
@@ -22,6 +23,7 @@ const port = process.env.PORT || 4000;
 
 // DB
 connectDB();
+connectCloudinary();
 
 const allowedOrigins = [
   "http://localhost:5173",
