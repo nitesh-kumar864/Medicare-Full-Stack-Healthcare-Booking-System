@@ -1,10 +1,9 @@
-export const doctorListService = async () => {
+import doctorModel from "../../models/doctorModel.js";
 
+export const doctorListService = async () => {
   const doctors = await doctorModel
     .find({})
-    .select("-password -email")
-    .limit(20)
-    .lean();
+    .select("-password -email");
 
   return {
     success: true,

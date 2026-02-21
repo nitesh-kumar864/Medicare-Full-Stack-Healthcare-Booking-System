@@ -91,10 +91,6 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-bookingSchema.index({ userId: 1 });
-bookingSchema.index({ status: 1 });
-bookingSchema.index({ bedType: 1 });
-
 const Booking =
   mongoose.models.booking || mongoose.model("booking", bookingSchema);
 

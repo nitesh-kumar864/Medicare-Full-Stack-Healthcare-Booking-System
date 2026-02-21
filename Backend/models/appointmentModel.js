@@ -84,10 +84,6 @@ appointmentSchema.index(
   }
 );
 
-appointmentSchema.index({ userId: 1 });
-appointmentSchema.index({ docId: 1 });
-appointmentSchema.index({ status: 1 });
-
 const appointmentModel =
   mongoose.models.appointment ||
   mongoose.model("appointment", appointmentSchema);
