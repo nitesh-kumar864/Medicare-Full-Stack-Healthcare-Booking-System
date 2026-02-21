@@ -304,4 +304,6 @@ npm run dev
 ## 👨‍💻 Author
 
 **Nitesh Kumar**  
-GitHub: https://github.com/nitesh-kumar864
+🔗 GitHub: https://github.com/nitesh-kumar864  
+
+📧 Email: nitesh.kumar70023@gmail.com
