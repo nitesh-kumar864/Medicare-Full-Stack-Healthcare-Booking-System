@@ -1,6 +1,14 @@
-# 🏥 Medicare – Full Stack Healthcare Management Platform
 
-![MERN Stack](https://img.shields.io/badge/MERN-Stack-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC) ![Status](https://img.shields.io/badge/Status-Active-success)
+<h1 align="center">🏥 Medicare – Full Stack Healthcare Management Platform</h1>
+<!-- BADGES -->
+<p align="center">
+  <img src="https://img.shields.io/badge/MERN-Stack-000000?style=for-the-badge&logo=react&logoColor=61DAFB"/>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"/>
+</p>
+
 
 **Medicare** is a scalable, full-stack healthcare management platform built using the MERN stack. It provides a complete ecosystem for patients, doctors, and administrators to manage appointments, bed bookings, payments, profiles, and support queries through role-based dashboards.
 
@@ -19,23 +27,25 @@ _Deployed on Render with environment-based configuration._
 ## ✨ Features
 
 ### 😷 Patient Features
-- **Secure Authentication:** JWT and OTP-based signup.
-- **Appointments:** Doctor search and appointment booking.
-- **Hospital Services:** Bed booking system.
-- **Payments:** Online payments integration using Razorpay.
-- **Profile:** Management with real-time username availability check.
-- **History:** View appointment and bed booking history.
-- **Feedback:** Reviews and ratings for doctors.
-- **Support:** Query submission and tracking.
-- **Security:** Password reset via email.
-- **Chatbot:** Integrated a chatbot for instant user assistance and common queries
+- **Secure Authentication:** JWT-based login, OTP-based signup verification, and password reset via email.
+- **Appointments:** Search doctors by specialization and book real-time appointments.
+- **Hospital Services:** Bed booking system with real-time availability tracking.
+- **Payments:** Secure online payments integration using Razorpay with booking confirmation.
+- **Profile Management:** Update personal details with real-time username availability check.
+- **History:** View appointment and bed booking history with status tracking.
+- **Feedback System:** Submit reviews and ratings for doctors.
+- **Support System:** Submit queries and track support requests.
+- **Chatbot:** Integrated chatbot for instant user assistance and common queries.
+- **Chat with Doctor:** Real-time post-appointment messaging system for patient-doctor communication.
 
 
 ### 👨‍⚕️ Doctor Features
-- **Dashboard:** Protected doctor authentication and dashboard.
-- **Management:** View and manage assigned appointments.
-- **Workflow:** Update appointment status (Completed / Cancelled).
-- **Profile:** Manage professional details.
+- **Secure Authentication:** Protected doctor login with role-based access control.
+- **Dashboard:** Personalized dashboard displaying assigned appointments and patient details.
+- **Appointment Management:** View, accept, update, and manage appointment status (Completed / Cancelled).
+- **Availability Management:** Set and update appointment availability slots.
+- **Profile Management:** Manage professional details, specialization, and experience information.
+- **Communication:** Respond to patient messages after appointment completion.
 
 ###  🛡️ Admin  Features
 - **Control:** Admin authentication with role-based access.
@@ -183,7 +193,6 @@ npm run dev
 - Doctor availability calendar
 - Appointment reminders (Email / SMS)
 - Prescription upload (PDF)
-- Real-time chat system
 - Dark mode support
 
 ---
@@ -191,4 +200,6 @@ npm run dev
 ## 👨‍💻 Author
 
 **Nitesh Kumar**  
-GitHub: https://github.com/nitesh-kumar864
+🔗 GitHub: https://github.com/nitesh-kumar864  
+
+📧 Email: nitesh.kumar70023@gmail.com
