@@ -7,12 +7,8 @@ import { toast } from "react-toastify";
 import {
   Send,
   Clock,
-  Phone,
-  Video,
-  MoreVertical,
   ArrowLeft,
   Paperclip,
-  Smile,
   Check,
   CheckCheck,
 } from "lucide-react";
@@ -48,7 +44,6 @@ const TypingIndicator = () => (
 const handleComingSoon = () => {
   toast.info("Coming Soon");
 };
-
 
 const DoctorChatPage = () => {
   const { appointmentId } = useParams();
@@ -192,27 +187,6 @@ const DoctorChatPage = () => {
               </span>
             </div>
           </div>
-
-          <div className="flex items-center gap-4 text-blue-600">
-            <button
-              onClick={handleComingSoon}
-              className="hover:bg-blue-50 p-2 rounded-full transition">
-              <Phone size={20} />
-            </button>
-
-            <button
-              onClick={handleComingSoon}
-              className="hover:bg-blue-50 p-2 rounded-full transition">
-              <Video size={20} />
-            </button>
-
-            <button
-              onClick={handleComingSoon}
-              className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition">
-              <MoreVertical size={20} />
-            </button>
-          </div>
-
         </div>
 
         {/* CHAT BODY */}
@@ -293,12 +267,6 @@ const DoctorChatPage = () => {
         <div className="bg-gray-100 px-4 py-3 border-t flex items-center gap-2 shrink-0">
           <button
             onClick={handleComingSoon}
-            className="text-gray-500 hover:text-gray-700 p-2 transition">
-            <Smile size={24} />
-          </button>
-
-          <button
-            onClick={handleComingSoon}
             className="text-gray-500 hover:text-gray-700 p-2 transition hidden md:block">
             <Paperclip size={22} />
           </button>
@@ -325,7 +293,6 @@ const DoctorChatPage = () => {
             />
           </button>
         </div>
-
       </div>
     </div>
   );

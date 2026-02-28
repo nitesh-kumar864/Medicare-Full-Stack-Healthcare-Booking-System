@@ -6,12 +6,8 @@ import { toast } from "react-toastify";
 import {
   Send,
   Clock,
-  Phone,
-  Video,
-  MoreVertical,
   ArrowLeft,
   Paperclip,
-  Smile,
   Check,
   CheckCheck
 } from "lucide-react";
@@ -58,7 +54,6 @@ const ChatPage = () => {
   const scrollRef = useRef(null);
 
   const [doctor, setDoctor] = useState(null);
-  const [showActions, setShowActions] = useState(false);
 
 
 
@@ -145,7 +140,7 @@ const ChatPage = () => {
       <div className="w-full max-w-md md:max-w-3xl h-full bg-white md:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
 
         {/* --- HEADER --- */}
-        <div className="h-16 px-4 bg-white border-b flex items-center justify-between shadow-sm shrink-0">
+        <div className="h-16 px-4 bg-white border-b flex items-center  shadow-sm shrink-0">
 
           <div className="flex items-center gap-3">
             <button
@@ -177,59 +172,7 @@ const ChatPage = () => {
               </span>
             </div>
           </div>
-          
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-4 text-blue-600">
-            <button 
-            onClick={handleComingSoon} 
-            className="hover:bg-blue-50 p-2 rounded-full">
-              <Phone size={20} />
-            </button>
-
-            <button 
-            onClick={handleComingSoon} 
-            className="hover:bg-blue-50 p-2 rounded-full">
-              <Video size={20} />
-            </button>
-
-            <button 
-            onClick={handleComingSoon} 
-            className="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
-              <MoreVertical size={20} />
-            </button>
-          </div>
-
-          {/* Mobile */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setShowActions(!showActions)}
-              className="text-gray-500 hover:bg-gray-100 p-2 rounded-full"
-            >
-              <MoreVertical size={22} />
-            </button>
-          </div>
         </div>
-
-        {showActions && (
-          <div className="md:hidden bg-white border-b shadow-sm flex justify-around py-2 animate-slide-down">
-            <button
-              onClick={handleComingSoon}
-              className="flex flex-col items-center text-blue-600 text-xs"
-            >
-              <Phone size={22} />
-              Call
-            </button>
-
-            <button
-              onClick={handleComingSoon}
-              className="flex flex-col items-center text-blue-600 text-xs"
-            >
-              <Video size={22} />
-              Video
-            </button>
-          </div>
-        )}
-
         {/* --- CHAT BODY --- */}
         <div className="flex-1 overflow-y-auto bg-[#e5ddd5] relative">
           <div className="p-4 flex flex-col space-y-2 relative z-0 pb-4">
@@ -299,12 +242,6 @@ const ChatPage = () => {
 
         {/* --- INPUT AREA --- */}
         <div className="bg-gray-100 px-4 py-3 border-t flex items-center gap-2 shrink-0">
-          <button
-            onClick={handleComingSoon}
-            className="text-gray-500 hover:text-gray-700 p-2 transition">
-            <Smile size={24} />
-          </button>
-
           <button
             onClick={handleComingSoon}
             className="text-gray-500 hover:text-gray-700 p-2 transition hidden md:block">
