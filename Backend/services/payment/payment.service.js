@@ -3,6 +3,10 @@ import doctorModel from "../../models/doctorModel.js";
 import Bed from "../../models/bedModel.js";
 import Booking from "../../models/BookingModel.js";
 
+import sendEmail from "../../mail/sendEmail.js";
+import { AppointmentCompletedTemplate } from "../../mail/emailTemplates/AppointmentCompleted.js";
+import { bedBookingSuccessTemplate } from "../../mail/emailTemplates/bedBookingSuccess.js";
+
 /* =========================CREATE APPOINTMENT ORDER============================= */
 export const createAppointmentOrderService = async (id) => {
   const appointment = await appointmentModel.findById(id);
@@ -72,6 +76,12 @@ export const verifyAppointmentPaymentService = async (
     }
   );
 
+  await sendEmail({
+    to: appointment.userData.email,
+    subject: "Appointment Payment Successful",
+    html: AppointmentCompletedTemplate(appointment),
+  });
+
   return "SUCCESS";
 };
 
@@ -113,6 +123,12 @@ export const verifyBedPaymentService = async (
       $addToSet: { occupiedNumbers: booking.bedNumber },
     }
   );
+
+  await sendEmail({
+    to: booking.email,
+    subject: "Bed Booking Confirmed",
+    html: bedBookingSuccessTemplate(booking),
+  });
 
   return "SUCCESS";
 };
