@@ -116,7 +116,7 @@ const BookingList = ({
                   Pay Now
                 </button>
               )}
-
+              
               {b.status !== "cancelled" && (
                 <button
                   onClick={() => cancelBooking(b._id)}
@@ -140,8 +140,8 @@ const BookingList = ({
           {/* TIMELINE */}
           <div
             className={`h-2 ${b.status === "booked"
-                ? "bg-gradient-to-r from-yellow-300 to-yellow-500"
-                : "bg-gray-300"
+              ? "bg-gradient-to-r from-yellow-300 to-yellow-500"
+              : "bg-gray-300"
               }`}
           ></div>
         </div>

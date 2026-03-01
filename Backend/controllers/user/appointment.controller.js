@@ -3,7 +3,7 @@ import {
   listAppointmentService,
   cancelAppointmentService,
 } from "../../services/user/appointment.service.js";
-
+ 
 //  BOOK APPOINTMENT
 export const bookAppointment = async (req, res) => {
   try {

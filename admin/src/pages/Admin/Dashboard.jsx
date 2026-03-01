@@ -15,6 +15,7 @@ const Dashboard = () => {
     getDashData,
     dashData,
     cancelAppointment,
+    handleDownloadPrescription,
     isActionLoading,
     isAdminPageLoading,
     backendUrl,
@@ -110,6 +111,8 @@ const Dashboard = () => {
         appointments={dashData.latestAppointments}
         slotDateFormat={slotDateFormat}
         cancelAppointment={cancelAppointment}
+        handleDownloadPrescription={handleDownloadPrescription}
+
         isActionLoading={isActionLoading}
       />
     </div>

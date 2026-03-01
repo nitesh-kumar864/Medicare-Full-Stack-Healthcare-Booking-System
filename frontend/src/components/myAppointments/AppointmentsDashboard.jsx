@@ -12,6 +12,8 @@ const AppointmentsDashboard = ({
   navigate,
   slotDateFormat,
   cancelAppointment,
+  handleDownloadPrescription,
+  downloadingId,
   handlePayNow,
   getAppointmentStatus,
   unreadMap,
@@ -104,6 +106,8 @@ const AppointmentsDashboard = ({
                 status={status}
                 slotDateFormat={slotDateFormat}
                 cancelAppointment={cancelAppointment}
+                handleDownloadPrescription={handleDownloadPrescription}
+                downloadingId={downloadingId}
                 handlePayNow={handlePayNow}
                 navigate={navigate}
                 unreadMap={unreadMap}

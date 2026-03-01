@@ -10,8 +10,11 @@ import {
   XCircle,
   CreditCard,
   MessageSquare,
+  Loader2,
+  FileText,
 } from "lucide-react";
 import { joinAppointmentRoom } from "../../chat/joinRoom";
+
 
 const AppointmentCard = ({
   item,
@@ -20,6 +23,8 @@ const AppointmentCard = ({
   slotDateFormat,
   handlePayNow,
   cancelAppointment,
+  handleDownloadPrescription,
+  downloadingId,
   navigate,
   unreadMap
 }) => {
@@ -102,7 +107,7 @@ const AppointmentCard = ({
             <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-100">
               <button
                 onClick={() => navigate(`/appointments/${doc._id}`)}
-                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
               >
                 <User size={20} /> View Doctor
               </button>
@@ -115,6 +120,25 @@ const AppointmentCard = ({
                 >
                   <CreditCard size={20} />
                   Pay Now
+                </button>
+              )}
+              {(item.isCompleted || item.payment) && (
+                <button
+                  onClick={() => handleDownloadPrescription(item._id)}
+                  disabled={downloadingId === item._id}
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {downloadingId === item._id ? (
+                    <>
+                      <Loader2 size={20} className="animate-spin" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <FileText size={20} />
+                      Download Prescription
+                    </>
+                  )}
                 </button>
               )}
 

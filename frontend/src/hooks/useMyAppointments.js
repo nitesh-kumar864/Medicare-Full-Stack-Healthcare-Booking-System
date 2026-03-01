@@ -11,6 +11,7 @@ export const useMyAppointments = ({
   getDoctorsData,
 }) => {
   const [appointments, setAppointments] = useState([]);
+  const [downloadingId, setDownloadingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [unreadMap, setUnreadMap] = useState({});
@@ -64,7 +65,6 @@ export const useMyAppointments = ({
             }
 
           );
-          console.log("Unread API Response for", appt._id, ":", res.data);
 
           temp[appt._id] = res.data.count || 0;
 
@@ -72,8 +72,6 @@ export const useMyAppointments = ({
           console.log("Unread fetch error", err);
         }
       }
-
-      console.log("Final unreadMap:", temp);
 
       setUnreadMap(temp);
     };
@@ -151,6 +149,33 @@ export const useMyAppointments = ({
     }
   };
 
+  const handleDownloadPrescription = async (appointmentId) => {
+    try {
+      setDownloadingId(appointmentId);
+
+      const response = await axios.get(
+        `${backendUrl}/api/pdf/download/${appointmentId}`,
+        {
+          headers: { token },
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `prescription-${appointmentId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+    } catch (error) {
+      console.log(error.response?.data);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   /* ================= FILTER ================= */
   const filteredAppointments = appointments.filter((a) => {
     if (filter === "cancelled") return a.status === "cancelled";
@@ -200,6 +225,8 @@ export const useMyAppointments = ({
     slotDateFormat,
     handlePayNow,
     cancelAppointment,
+    handleDownloadPrescription,
+    downloadingId,
     getAppointmentStatus,
     unreadMap,
   };

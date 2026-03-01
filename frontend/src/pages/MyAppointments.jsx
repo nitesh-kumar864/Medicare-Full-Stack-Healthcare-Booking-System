@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 
@@ -19,6 +19,8 @@ const MyAppointments = () => {
     slotDateFormat,
     handlePayNow,
     cancelAppointment,
+    handleDownloadPrescription, 
+    downloadingId,
     getAppointmentStatus,
     unreadMap,
   } = useMyAppointments({
@@ -46,6 +48,8 @@ const MyAppointments = () => {
         navigate={navigate}
         slotDateFormat={slotDateFormat}
         cancelAppointment={cancelAppointment}
+       handleDownloadPrescription={handleDownloadPrescription}
+        downloadingId={downloadingId}
         handlePayNow={handlePayNow}
         getAppointmentStatus={getAppointmentStatus}
         unreadMap={unreadMap}
