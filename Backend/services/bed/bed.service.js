@@ -1,6 +1,9 @@
 import Bed from "../../models/bedModel.js";
 import Booking from "../../models/BookingModel.js";
 
+import sendEmail from "../../mail/sendEmail.js";
+import { bedBookingCancelledTemplate } from "../../mail/emailTemplates/bedBookingCancelled.js";
+
 /* =================  GET BED AVAILABILITY (USER + ADMIN) ================= */
 export const getAvailabilityService = async () => {
   try {
@@ -178,6 +181,19 @@ export const cancelBookingService = async (userId, bookingId) => {
         }
         await bed.save();
       }
+
+        // SEND EMAIL
+    await sendEmail({
+      to: booking.email,
+      subject: "Bed Booking Cancelled",
+      html: bedBookingCancelledTemplate(booking),
+    });
+
+    return {
+      success: true,
+      message: "Booking cancelled & email sent",
+    };
+
     }
   } catch (error) {
     console.log(error);

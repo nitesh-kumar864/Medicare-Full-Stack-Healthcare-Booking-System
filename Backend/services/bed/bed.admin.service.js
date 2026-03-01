@@ -1,6 +1,9 @@
 import Bed from "../../models/bedModel.js";
 import Booking from "../../models/BookingModel.js";
 
+import sendEmail from "../../mail/sendEmail.js";
+import { bedBookingCancelledTemplate } from "../../mail/emailTemplates/bedBookingCancelled.js";
+
 /* ======================  GET ALL BED BOOKINGS  ====================== */
 export const getAllBedBookingsAdminService = async () => {
   try {
@@ -66,6 +69,7 @@ export const resetBedsAdminService = async () => {
 export const cancelBookingAdminService = async (bookingId) => {
   try {
     const booking = await Booking.findById(bookingId);
+   
     if (!booking) {
       throw new Error("Booking not found");
     }
@@ -100,6 +104,17 @@ export const cancelBookingAdminService = async (bookingId) => {
           bed.bedTypes[booking.bedType].occupied = 0;
         }
         await bed.save();
+        await sendEmail({
+          to: booking.email,
+          subject: "Bed Booking Cancelled by Admin",
+          html: bedBookingCancelledTemplate(booking),
+        });
+
+        return {
+          success: true,
+          message: "Booking cancelled & email sent",
+        };
+
       }
     }
   } catch (error) {
@@ -116,7 +131,7 @@ export const resetIndividualBedAdminService = async (bedNumber) => {
       throw new Error("Bed data not found");
     }
 
-      const bedNum = Number(bedNumber);
+    const bedNum = Number(bedNumber);
 
 
     if (!bed.occupiedNumbers.includes(Number(bedNumber))) {
