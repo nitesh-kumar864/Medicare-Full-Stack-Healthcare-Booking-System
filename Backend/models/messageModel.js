@@ -16,10 +16,17 @@ const messageSchema = new mongoose.Schema(
       enum: ["user", "doctor"],
       required: true,
     },
-    text: {
+    text: String,
+    type: {
       type: String,
-      required: true,
+      enum: ["text", "image", "pdf"],
+      default: "text",
     },
+    fileUrl: {
+      type: String,
+      default: null,
+    },
+
     seen: {
       type: Boolean,
       default: false,

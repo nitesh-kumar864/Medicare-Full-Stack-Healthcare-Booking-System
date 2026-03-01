@@ -1,7 +1,8 @@
 import appointmentModel from "../models/appointmentModel.js";
 import {
   getMessageByAppointmentService,
-  getUnreadCountService
+  getUnreadCountService,
+  uploadChatFileService 
 } from "../services/message.service.js";
 
 export const getMessageByAppointment = async (req, res) => {
@@ -38,8 +39,6 @@ export const getMessageByAppointment = async (req, res) => {
   }
 };
 
-
-
 export const getUnreadCount = async (req, res) => {
   try {
     const { appointmentId } = req.params;
@@ -58,6 +57,29 @@ export const getUnreadCount = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to get unread count",
+    });
+  }
+};
+
+export const uploadChatFileController = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+
+    const result = await uploadChatFileService(
+      appointmentId,
+      req.file
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "File uploaded successfully",
+      data: result,
+    });
+
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message || "File upload failed",
     });
   }
 };

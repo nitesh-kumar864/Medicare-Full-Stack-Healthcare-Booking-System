@@ -11,6 +11,7 @@ import {
   Paperclip,
   Check,
   CheckCheck,
+  FileText
 } from "lucide-react";
 
 
@@ -41,10 +42,6 @@ const TypingIndicator = () => (
   </div>
 );
 
-const handleComingSoon = () => {
-  toast.info("Coming Soon");
-};
-
 const DoctorChatPage = () => {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
@@ -53,6 +50,41 @@ const DoctorChatPage = () => {
   const [text, setText] = useState("");
   const [typingStatus, setTypingStatus] = useState(null);
   const [patient, setPatient] = useState(null);
+
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const token = localStorage.getItem("token");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/chat/upload/${appointmentId}`,
+        formData,
+        {
+          headers: { token }
+        }
+      );
+
+      if (res.data.success) {
+        socket.emit("send-message", {
+          appointmentId,
+          text: "",
+          type: res.data.data.type,
+          fileUrl: res.data.data.fileUrl
+        });
+      }
+
+    } catch (err) {
+      console.log("Upload error:", err);
+      toast.error("Upload failed");
+    }
+  };
+
 
   const scrollRef = useRef(null);
 
@@ -228,8 +260,56 @@ const DoctorChatPage = () => {
                           ? "bg-[#dcf8c6] text-gray-900 rounded-tr-none"
                           : "bg-white text-gray-900 rounded-tl-none"}`}>
 
-                        <p className="break-words mb-1">{m.text}</p>
+                        {/* TEXT */}
+                        {m.type === "text" && (
+                          <p className="break-words mb-1">{m.text}</p>
+                        )}
 
+                        {/* IMAGE */}
+                        {m.fileUrl && !m.fileUrl.toLowerCase().endsWith(".pdf") && (
+                          <a
+                            href={m.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block"
+                          >
+                            <img
+                              src={m.fileUrl}
+                              alt="chat-img"
+                              className="rounded-2xl max-h-64 object-cover mb-1 hover:opacity-90 transition"
+                            />
+                          </a>
+                        )}
+
+                        {/* PDF */}
+                        {m.fileUrl && m.fileUrl.toLowerCase().endsWith(".pdf") && (
+                          <div className="max-w-xs">
+                            <a
+                              href={m.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-4 bg-white shadow-md hover:shadow-lg transition-all duration-200 rounded-2xl p-4 border border-gray-100 hover:border-gray-200 group"
+                            >
+                              <div className="flex items-center justify-center w-12 h-12 bg-red-100 text-red-600 rounded-xl text-2xl group-hover:bg-red-200 transition">
+                                <FileText size={20} />
+                              </div>
+
+                              <div className="flex flex-col overflow-hidden">
+                                <span className="text-sm font-semibold text-gray-800 truncate">
+                                  {m.fileUrl?.split("/").pop()}
+                                </span>
+
+                                <span className="text-xs text-gray-500">
+                                  PDF Document
+                                </span>
+
+                                <span className="text-xs text-blue-600 font-medium mt-1 group-hover:underline">
+                                  Click to open
+                                </span>
+                              </div>
+                            </a>
+                          </div>
+                        )}
                         <div className={`flex items-center justify-end gap-1 text-[10px] 
                           ${isMe
                             ? "text-gray-500"
@@ -265,9 +345,16 @@ const DoctorChatPage = () => {
 
         {/* INPUT AREA */}
         <div className="bg-gray-100 px-4 py-3 border-t flex items-center gap-2 shrink-0">
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            className="hidden"
+            id="fileInput"
+            onChange={handleFileUpload}
+          />
           <button
-            onClick={handleComingSoon}
-            className="text-gray-500 hover:text-gray-700 p-2 transition hidden md:block">
+            onClick={() => document.getElementById("fileInput").click()}
+            className="text-gray-500 hover:text-gray-700 p-2">
             <Paperclip size={22} />
           </button>
           <div className="flex-1 relative">
