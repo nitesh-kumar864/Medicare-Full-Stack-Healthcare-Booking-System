@@ -3,8 +3,8 @@ import doctorModel from "../../models/doctorModel.js";
 import userModel from "../../models/userModel.js";
 
 import sendEmail from "../../mail/sendEmail.js";
-import { AppointmentCompletedTemplate } from "../../mail/emailTemplates/AppointmentCompleted.js";
 import { appointmentCancelledTemplate } from "../../mail/emailTemplates/appointmentCancelled.js";
+import { DoctorAppointmentCancelledTemplate } from "../../mail/emailTemplates/DoctorAppointmentCancelled.js";
 
 // --------------- BOOK APPOINTMENT ---------------
 export const bookAppointmentService = async (userId, data) => {
@@ -102,64 +102,6 @@ export const bookAppointmentService = async (userId, data) => {
   };
 };
 
-// ---------------- PAYMENT SUCCESS ----------------
-export const paymentSuccessService = async (
-  appointmentId,
-  paymentDetails
-) => {
-  const appointment = await appointmentModel.findById(appointmentId);
-  console.log("STEP 1: Payment success service called");
-
-  if (!appointment) {
-    return { success: false, message: "Appointment not found" };
-  }
-
-  if (appointment.payment) {
-    return { success: true, message: "Already paid" };
-  }
-
-  // Update Appointment
-  appointment.payment = true;
-  appointment.paymentMethod = "online";
-  appointment.status = "booked";
-
-  appointment.transactionId = paymentDetails.transactionId || "";
-  appointment.razorpayOrderId = paymentDetails.razorpayOrderId || "";
-  appointment.razorpayPaymentId = paymentDetails.razorpayPaymentId || "";
-  appointment.razorpaySignature = paymentDetails.razorpaySignature || "";
-
-  await appointment.save();
-
-  // Move slot from locked → booked
-  await doctorModel.findByIdAndUpdate(appointment.docId, {
-    $pull: {
-      slots_locked: {
-        date: appointment.slotDate,
-        time: appointment.slotTime,
-      },
-    },
-    $push: {
-      slots_booked: {
-        date: appointment.slotDate,
-        time: appointment.slotTime,
-      },
-    },
-  });
-
-
-  // Send Email
- await sendEmail({
-  to: appointment.userData.email,
-  subject: "Appointment Payment Successful",
-  html: AppointmentCompletedTemplate(appointment),
-});
-
-  return {
-    success: true,
-    message: "Payment successful & confirmation email sent",
-  };
-};
-
 
 // ------------------ LIST USER APPOINTMENTS ------------------
 export const listAppointmentService = async (userId) => {
@@ -215,6 +157,13 @@ export const cancelAppointmentService = async (userId, appointmentId) => {
     to: appointment.userData.email,
     subject: "Appointment Cancelled",
     html: appointmentCancelledTemplate(appointment),
+  });
+
+  // Send to Doctor
+    await sendEmail({
+    to: appointment.doctorData.email,
+    subject: "Appointment Cancelled",
+    html: DoctorAppointmentCancelledTemplate(appointment),
   });
 
   return {

@@ -6,6 +6,7 @@ import Booking from "../../models/BookingModel.js";
 import sendEmail from "../../mail/sendEmail.js";
 import { AppointmentCompletedTemplate } from "../../mail/emailTemplates/AppointmentCompleted.js";
 import { bedBookingSuccessTemplate } from "../../mail/emailTemplates/bedBookingSuccess.js";
+import { DoctorNewAppointmentTemplate } from "../../mail/emailTemplates/DoctorNewAppointment.js";
 
 /* =========================CREATE APPOINTMENT ORDER============================= */
 export const createAppointmentOrderService = async (id) => {
@@ -42,6 +43,7 @@ export const verifyAppointmentPaymentService = async (
   paymentId
 ) => {
   const appointment = await appointmentModel.findById(id);
+  const doctor = await doctorModel.findById(id);
 
   if (!appointment) {
     throw new Error("Appointment not found");
@@ -76,10 +78,18 @@ export const verifyAppointmentPaymentService = async (
     }
   );
 
+  // send to Patient
   await sendEmail({
     to: appointment.userData.email,
     subject: "Appointment Payment Successful",
     html: AppointmentCompletedTemplate(appointment),
+  });
+
+  // Send to Doctor
+    await sendEmail({
+    to: appointment.doctorData.email,
+    subject: "Appointment Payment Successful",
+    html: DoctorNewAppointmentTemplate(appointment),
   });
 
   return "SUCCESS";

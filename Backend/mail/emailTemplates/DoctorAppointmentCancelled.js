@@ -1,0 +1,83 @@
+export const DoctorAppointmentCancelledTemplate = (appointment) => {
+  return `
+<style>
+    /* Mobile Responsive Styles */
+    @media only screen and (max-width: 600px) {
+        .email-container {
+            padding: 20px 15px !important;
+            margin: 10px !important;
+            width: auto !important;
+        }
+
+        .detail-row {
+            display: block !important;
+            margin-bottom: 15px !important;
+        }
+
+        .detail-label {
+            display: block !important;
+            width: 100% !important;
+            margin-bottom: 4px !important;
+            color: #7f1d1d !important;
+        }
+
+        .header-title {
+            font-size: 20px !important;
+        }
+    }
+</style>
+
+<div class="email-container"
+    style="max-width: 600px; margin: 20px auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; padding: 30px; border-radius: 10px; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box;">
+
+    <div style="background-color: #29ec91; padding: 20px; text-align: center; margin-bottom: 10px;">
+        <img src="https://res.cloudinary.com/dozq9qzhh/image/upload/v1769458899/logo_wkn1e5.png" alt="Medicare Logo"
+            style="height: 50px; margin-bottom: 6px;" />
+    </div>
+
+    <h2 class="header-title"
+        style="color: #dc2626; text-align: center; margin-top: 0; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0;">
+        Appointment Cancelled
+    </h2>
+
+    <div style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p>Hello <strong style="font-size: 18px; color: #111827;"> ${appointment.doctorData.name}</strong>,</p>
+        <p>The following appointment has been cancelled by the patient.</p>
+    </div>
+
+    <div
+        style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 20px; margin: 25px 0;">
+        <p class="detail-row" style="margin: 10px 0; color: #1e293b; font-size: 15px;">
+            <strong class="detail-label" style="color: #7f1d1d; display: inline-block; width: 140px;">Patient Name:</strong> ${appointment.userData.name}
+        </p>
+        <p class="detail-row" style="margin: 10px 0; color: #1e293b; font-size: 15px;">
+            <strong class="detail-label" style="color: #7f1d1d; display: inline-block; width: 140px;">Patient Email:</strong> ${appointment.userData.email}
+        </p>
+        <p class="detail-row" style="margin: 10px 0; color: #1e293b; font-size: 15px;">
+            <strong class="detail-label" style="color: #7f1d1d; display: inline-block; width: 140px;">Date:</strong> ${appointment.slotDate}
+        </p>
+        <p class="detail-row" style="margin: 10px 0; color: #1e293b; font-size: 15px;">
+            <strong class="detail-label" style="color: #7f1d1d; display: inline-block; width: 140px;">Time:</strong> ${appointment.slotTime}
+        </p>
+        <p class="detail-row" style="margin: 10px 0; color: #1e293b; font-size: 15px;">
+            <strong class="detail-label" style="color: #7f1d1d; display: inline-block; width: 140px;">Amount:</strong> ₹${appointment.amount}
+        </p>
+        <p class="detail-row" style="margin: 10px 0; color: #1e293b; font-size: 15px;">
+            <strong class="detail-label" style="color: #7f1d1d; display: inline-block; width: 140px;">Payment Status:</strong> ${appointment.status}
+        </p>
+    </div>
+
+    <p style="color: #4b5563; font-size: 15px; text-align: left; margin-top: 30px; line-height: 1.5;">
+        <strong style="color: #111827;">Regards,</strong><br>
+        Medicare System
+    </p>
+
+    <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb; margin-top: 30px; border-radius: 0 0 10px 10px;">
+        <p style="font-size: 12px; color: #6b7280; margin: 0;">
+            © ${new Date().getFullYear()} Medicare. All rights reserved.
+        </p>
+    </div>
+
+</div>
+  `;
+};
