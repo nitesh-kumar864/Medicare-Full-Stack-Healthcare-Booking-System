@@ -2,7 +2,10 @@ import puppeteer from "puppeteer";
 import { prescriptionHTMLTemplate } from "../pdfTemplates/prescriptionTemplate.js";
 
 export const generatePrescriptionPDF = async (appointment, res) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
   const page = await browser.newPage();
 
   const html = prescriptionHTMLTemplate(appointment);
@@ -11,15 +14,15 @@ export const generatePrescriptionPDF = async (appointment, res) => {
   await page.waitForSelector("img");
 
   const pdfBuffer = await page.pdf({
-   format: "A4",
-  printBackground: true,
-  margin: {
-    top: "20px",
-    right: "20px",
-    bottom: "20px",
-    left: "20px",
-  },
-  preferCSSPageSize: true,
+    format: "A4",
+    printBackground: true,
+    margin: {
+      top: "20px",
+      right: "20px",
+      bottom: "20px",
+      left: "20px",
+    },
+    preferCSSPageSize: true,
   });
 
   await browser.close();
