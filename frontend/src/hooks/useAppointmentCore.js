@@ -174,11 +174,27 @@ const useAppointmentCore = ({
     fetchReviews();
   };
 
+  const isProfileComplete = () => {
+    if (!userData) return false;
+
+    const { phone, gender, dob, address } = userData;
+
+    return (
+      phone &&
+      gender &&
+      dob
+    );
+  };
+
   /* ---------------- Book Appointment ---------------- */
   const bookAppointment = async (slotDate, slotTime) => {
     if (!token) return navigate("/login");
     if (!selectedTime) return toast.error("Select time slot");
-
+    if (!isProfileComplete()) {
+    toast.error("Please complete your profile before booking.");
+    navigate("/my-profile");
+    return;
+  }
     setBookingLoading(true);
 
     const { data } = await axios.post(
