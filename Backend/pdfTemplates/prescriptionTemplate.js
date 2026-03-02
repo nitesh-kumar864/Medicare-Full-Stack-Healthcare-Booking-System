@@ -1,8 +1,9 @@
 export const prescriptionHTMLTemplate = (appointment) => {
-    return `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
+return `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Summary</title>
@@ -68,7 +69,7 @@ export const prescriptionHTMLTemplate = (appointment) => {
             font-size: 14px;
             color: #475569;
         }
-        
+
         .meta-info strong {
             color: #94a3b8;
             font-weight: 500;
@@ -93,7 +94,8 @@ export const prescriptionHTMLTemplate = (appointment) => {
 
         .details-col h3 {
             font-size: 13px;
-            color: #10b981; /* Modern Emerald Green */
+            color: #10b981;
+            /* Modern Emerald Green */
             text-transform: uppercase;
             letter-spacing: 0.8px;
             font-weight: 700;
@@ -105,7 +107,7 @@ export const prescriptionHTMLTemplate = (appointment) => {
             margin-bottom: 12px;
             font-size: 14px;
         }
-        
+
         .details-row:last-child {
             margin-bottom: 0;
         }
@@ -170,7 +172,8 @@ export const prescriptionHTMLTemplate = (appointment) => {
         }
 
         .payment-total {
-            background-color: #ecfdf5; /* Very light green */
+            background-color: #ecfdf5;
+            /* Very light green */
             padding: 20px 24px;
             display: flex;
             justify-content: space-between;
@@ -231,33 +234,64 @@ export const prescriptionHTMLTemplate = (appointment) => {
 
         /* Mobile Responsive */
         @media (max-width: 600px) {
-            body { padding: 10px; }
-            .document { padding: 30px 20px; border-radius: 12px; }
-            .header, .details-grid, .footer-area {
+            body {
+                padding: 10px;
+            }
+
+            .document {
+                padding: 30px 20px;
+                border-radius: 12px;
+            }
+
+            .header,
+            .details-grid,
+            .footer-area {
                 flex-direction: column;
                 gap: 24px;
             }
-            .meta-info { text-align: left; }
-            .signature-box { width: 100%; margin-top: 30px; }
+
+            .meta-info {
+                text-align: left;
+            }
+
+            .signature-box {
+                width: 100%;
+                margin-top: 30px;
+            }
         }
 
         /* Print Styles */
         @media print {
-            body { background-color: #ffffff; padding: 0; }
-            .document { box-shadow: none; border: none; padding: 0; max-width: 100%; }
-            .payment-section { break-inside: avoid; }
+            body {
+                background-color: #ffffff;
+                padding: 0;
+            }
+
+            .document {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .payment-section {
+                break-inside: avoid;
+            }
         }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
 
     <div class="document">
 
         <div class="header">
             <div class="clinic-info">
-                <img src="https://res.cloudinary.com/dozq9qzhh/image/upload/v1769458899/logo_wkn1e5.png" alt="Medicare Logo" />
-                <p>Bangalore, India</p>
-                <p>Phone: +91 9876543210</p>
+                <img src="https://res.cloudinary.com/dozq9qzhh/image/upload/v1769458899/logo_wkn1e5.png"
+                    alt="Medicare Logo" />
+                <p><strong>Medicare Healthcare Services</strong></p>
+                <p>Bangalore, Karnataka, India</p>
+                <p>Contact: +91 9876543210</p>
             </div>
             <div class="meta-info">
                 <h2>PRESCRIPTION</h2>
@@ -319,7 +353,8 @@ export const prescriptionHTMLTemplate = (appointment) => {
 
         <div class="footer-area">
             <div class="disclaimer">
-                This is a digitally generated medical summary and serves as a valid proof of appointment and payment.
+                <span style="font-weight: 900;">Notes: </span> This is a system-generated medical document issued by
+                Medicare Healthcare Services. It serves as an official record of the appointment and payment transaction
             </div>
             <div class="signature-box">
                 <div class="signature-line"></div>
@@ -330,7 +365,8 @@ export const prescriptionHTMLTemplate = (appointment) => {
 
     </div>
 
-  </body>
-  </html>
-  `;
+</body>
+
+</html>
+`;
 };
