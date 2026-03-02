@@ -56,7 +56,7 @@ const DoctorChatPage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("dToken");
 
     const formData = new FormData();
     formData.append("file", file);
