@@ -131,7 +131,11 @@ const useAppointmentCore = ({
 
   /* ---------------- Review CRUD ---------------- */
   const submitReview = async () => {
-    if (!token) return navigate("/login");
+    if (!token) {
+      return navigate("/login", {
+        state: { from: `/appointments/${docId}` }
+      });
+    }
     if (rating === 0) return toast.error("Please give a rating");
 
     const completed = appointments.find(
@@ -177,24 +181,37 @@ const useAppointmentCore = ({
   const isProfileComplete = () => {
     if (!userData) return false;
 
-    const { phone, gender, dob, address } = userData;
+    const { phone, gender, dob } = userData;
 
-    return (
-      phone &&
-      gender &&
-      dob
-    );
+    if (
+      !phone ||
+      phone.length == "0000000000" ||
+      gender === "Not selected" ||
+      !gender ||
+      dob === "Not selected" ||
+      !dob
+    ) {
+      return false;
+    }
+
+    return true;
   };
 
   /* ---------------- Book Appointment ---------------- */
   const bookAppointment = async (slotDate, slotTime) => {
-    if (!token) return navigate("/login");
+    if (!token) {
+      return navigate("/login", {
+        state: { from: `/appointments/${docId}` }
+      });
+    }
     if (!selectedTime) return toast.error("Select time slot");
     if (!isProfileComplete()) {
-    toast.error("Please complete your profile before booking.");
-    navigate("/my-profile");
-    return;
-  }
+      toast.error("Complete your profile before booking.");
+      navigate("/my-profile", {
+        state: { returnTo: `/appointments/${docId}` }
+      });
+      return;
+    }
     setBookingLoading(true);
 
     const { data } = await axios.post(

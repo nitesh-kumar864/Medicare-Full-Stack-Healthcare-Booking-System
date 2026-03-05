@@ -41,7 +41,7 @@ export const getAvailabilityService = async () => {
     console.log("Availability Error:", error);
     throw error;
   }
-};
+}; 
 
 /* ============================  BOOK BED (USER) ============================ */
 export const bookBedService = async (userId, body) => {

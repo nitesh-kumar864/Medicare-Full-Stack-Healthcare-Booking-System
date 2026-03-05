@@ -35,6 +35,8 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const redirectTo = location.state?.from || "/";
+
   // VALIDATION ERROR STATE
   const [errors, setErrors] = useState({
     name: "",
@@ -129,6 +131,7 @@ const SignUpPage = () => {
             username,
             email,
             password,
+            from: redirectTo,
           },
         });
       } else {
@@ -354,7 +357,7 @@ const SignUpPage = () => {
                 )}
 
                 <div className={`${!acceptedTerms ? "opacity-50" : ""}`}>
-                  <GoogleLoginPatient redirectTo={location.state?.from} />
+                  <GoogleLoginPatient redirectTo={redirectTo} />
                 </div>
               </div>
             </>
@@ -364,8 +367,11 @@ const SignUpPage = () => {
           <div className="px-2 py-4 flex justify-center">
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
-              <Link to="/login" className="text-primary font-semibold hover:underline">
-                Login
+              <Link
+                to="/login"
+                state={{ from: redirectTo }}
+                className="text-primary font-semibold hover:underline"
+              >
               </Link>
             </p>
           </div>

@@ -11,11 +11,12 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { name, username, email, password } = location.state || {};
+  const { name, username, email, password, from } = location.state || {};
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const inputRefs = useRef([]);
+  const redirectTo = from || "/";
 
   if (!email) {
     navigate("/signup");
@@ -89,7 +90,7 @@ const VerifyOtp = () => {
         toast.success("Account created successfully");
         localStorage.setItem("token", data.token);
         setToken(data.token);
-        navigate("/");
+       navigate(redirectTo);
       } else {
         toast.error(data.message);
       }

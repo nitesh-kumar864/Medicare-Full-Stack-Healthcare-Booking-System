@@ -151,7 +151,7 @@ const BedManager = () => {
 
   const resetIndividualBed = async () => {
     if (!selectedBed) {
-      toast.error("Please enter a bed number");
+      toast.error("Enter a bed number");
       return;
     }
 

@@ -47,7 +47,7 @@ const LoginPage = () => {
   //  Redirect if already logged in
   useEffect(() => {
     if (token && userData !== null) {
-      navigate("/");
+     navigate(redirectTo);
     }
 
   }, [token, userData]);
@@ -233,7 +233,7 @@ const LoginPage = () => {
                 }}
               ></div>
             )}
- 
+
             {/* Google Button */}
             <div
               className={`${!acceptedTerms ? "opacity-50" : ""}`}

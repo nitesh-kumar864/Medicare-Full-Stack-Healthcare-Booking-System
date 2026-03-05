@@ -116,9 +116,9 @@ const BedPage = () => {
       userData.gender === "Not selected" ||
       userData.dob === "Not selected" ||
       !userData.phone ||
-      userData.phone.length < 10
+      userData.phone.length < 10 
     ) {
-      toast.error("Please complete your profile before booking.");
+      toast.error("Complete your profile before booking.");
       return navigate("/my-profile", {
         state: { returnTo: "/bed-availability" },
       });
