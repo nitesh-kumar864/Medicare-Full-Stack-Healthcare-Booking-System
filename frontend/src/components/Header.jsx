@@ -9,11 +9,13 @@ const Header = () => {
     patients: 0,
   });
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
 
-        const { data } = await axios.get('http://localhost:4000/api/public/stats');
+        const { data } = await axios.get(`${backendUrl}/api/public/stats`);
         if (data.success) {
           setStats(data.stats);
         }
@@ -24,7 +26,7 @@ const Header = () => {
       };
 
     }
-     fetchStats();
+    fetchStats();
   }, []);
 
   return (
@@ -101,7 +103,7 @@ const Header = () => {
         {[
           { value: stats.doctors + "+", label: 'Specialist Doctors' },
           { value: '96%', label: 'Patient Satisfaction' },
-           { value: stats.patients + "+", label: 'Total patients' },
+          { value: stats.patients + "+", label: 'Registered Patients' },
           { value: stats.appointments + "+", label: 'Appointments Booked' }
         ].map((stat, index) => (
           <div
