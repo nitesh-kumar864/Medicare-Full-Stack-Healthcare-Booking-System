@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import CountUp from "react-countup";
 
 const Header = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     doctors: 0,
     appointments: 0,
@@ -23,7 +25,9 @@ const Header = () => {
       } catch (error) {
         console.error("fetch error message", error);
 
-      };
+      } finally {
+        setLoading(false);
+      }
 
     }
     fetchStats();
@@ -101,17 +105,31 @@ const Header = () => {
       {/* STATS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mt-10 max-w-5xl mx-auto">
         {[
-          { value: stats.doctors + "+", label: 'Specialist Doctors' },
-          { value: '96%', label: 'Patient Satisfaction' },
-          { value: stats.patients + "+", label: 'Registered Patients' },
-          { value: stats.appointments + "+", label: 'Appointments Booked' }
+          { value: stats.doctors, label: 'Specialist Doctors', suffix: "+" },
+          { value: 96, label: 'Patient Satisfaction', suffix: "%" },
+          { value: stats.patients, label: 'Registered Patients', suffix: "+" },
+          { value: stats.appointments, label: 'Appointments Booked', suffix: "+" }
         ].map((stat, index) => (
           <div
             key={index}
             className="bg-white shadow-md hover:shadow-lg rounded-xl p-5 text-center border border-gray-100 transition-all"
           >
-            <p className="text-primary text-3xl font-bold">{stat.value}</p>
-            <p className="text-gray-600 text-sm font-medium mt-1">{stat.label}</p>
+            <p className="text-primary text-3xl font-bold">
+              {loading ? (
+                <span className='inline-block w-14 h-7 bg-gray-200 rounded animate-pulse'></span>
+              ) : (
+                <CountUp
+                  end={stat.value}
+                  duration={2}
+                  suffix={stat.suffix}
+                  separator=","
+                  enableScrollSpy
+                  scrollSpyOnce
+                />
+              )}
+            </p>
+            <p className="text-gray-600 text-sm font-medium mt-1">
+              {stat.label}</p>
           </div>
         ))}
       </div>
