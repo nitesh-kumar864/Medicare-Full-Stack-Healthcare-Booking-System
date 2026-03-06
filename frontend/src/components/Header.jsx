@@ -1,7 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 
 const Header = () => {
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [stats, setStats] = useState({
+    doctors: 0,
+    appointments: 0,
+    patients: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+
+        const { data } = await axios.get('http://localhost:4000/api/public/stats');
+        if (data.success) {
+          setStats(data.stats);
+        }
+
+      } catch (error) {
+        console.error("fetch error message", error);
+
+      };
+
+    }
+     fetchStats();
+  }, []);
 
   return (
     <div className="pt-28">
@@ -63,7 +87,7 @@ const Header = () => {
           <img
             src={"https://res.cloudinary.com/dozq9qzhh/image/upload/v1769459286/header_img_ffpia4.png"}
             alt="Doctor"
-            fetchpriority="high"      
+            fetchpriority="high"
             onLoad={() => setImageLoaded(true)}
             className={`w-[320px] md:w-[420px] lg:w-[480px] rounded-xl drop-shadow-xl
               transition-opacity duration-500
@@ -73,12 +97,12 @@ const Header = () => {
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-10 max-w-5xl mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mt-10 max-w-5xl mx-auto">
         {[
-          { value: '20+', label: 'Specialist Doctors' },
-          { value: '24/7', label: 'Emergency Service' },
+          { value: stats.doctors + "+", label: 'Specialist Doctors' },
           { value: '96%', label: 'Patient Satisfaction' },
-          { value: '50+', label: 'Appointments Booked' }
+           { value: stats.patients + "+", label: 'Total patients' },
+          { value: stats.appointments + "+", label: 'Appointments Booked' }
         ].map((stat, index) => (
           <div
             key={index}

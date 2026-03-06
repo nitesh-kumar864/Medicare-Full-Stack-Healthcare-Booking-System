@@ -15,6 +15,7 @@ import supportRoute from "./routes/supportRoute.js";
 import reviewRoutes from "./routes/reviewRoute.js";
 import chatRoutes from "./routes/chatRoute.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
+import publicRoutes from "./routes/publicRoutes.js";
 
 import { initSocket }  from "./socket/index.js";
 
@@ -75,6 +76,7 @@ app.use("/api/bed", bedRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/pdf", prescriptionRoutes);
+app.use("/api/public", publicRoutes);
 
 
 // test route
