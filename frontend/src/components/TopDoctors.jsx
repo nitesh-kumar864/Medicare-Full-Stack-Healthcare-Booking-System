@@ -4,11 +4,11 @@ import { AppContext } from '../context/AppContext';
 
 const TopDoctors = () => {
     const navigate = useNavigate();
-    const { doctors} = useContext(AppContext);
+    const { doctors } = useContext(AppContext);
 
     const handleNavigate = (path) => {
         navigate(path);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({behavior: 'smooth' });
     };
 
     return (
@@ -29,11 +29,19 @@ const TopDoctors = () => {
                                 onClick={() => handleNavigate(`/appointments/${item._id}`)}
                                 className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 transition-all duration-500'
                             >
-                                <img
-                                    className="w-full h-60 object-contain sm:object-cover"
-                                    src={item.image}
-                                    alt={item.name}
-                                />
+                                <div className='relative'>
+                                    <img
+                                        className="w-full h-60 object-contain sm:object-cover"
+                                        src={item.image}
+                                        alt={item.name}
+                                    />
+
+                                    {/* Rating badge */}
+                                    <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full shadow text-sm flex items-center gap-1">
+                                        <span className="text-yellow-500">⭐</span>
+                                        <span className="text-gray-700">{item.averageRating || "0.0"}</span>
+                                    </div>
+                                </div>
 
                                 <div className='p-4'>
                                     <div

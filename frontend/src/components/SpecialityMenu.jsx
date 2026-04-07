@@ -12,7 +12,7 @@ const SpecialityMenu = () => {
       <div className='flex sm:justify-center gap-4 pt-5 w-full overflow-x-auto'>
         {specialityData.map((item, index) => (
           <Link
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => window.scrollTo({behavior: 'smooth' })}
             className='flex flex-col items-center text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500'
             key={index}
             to={`/doctors/${encodeURIComponent(item.speciality.toLowerCase())}`}

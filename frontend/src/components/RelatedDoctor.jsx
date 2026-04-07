@@ -29,7 +29,7 @@ const RelatedDoctor = ({ speciality, docId }) => {
 
   return (
 
-    
+
     <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
       <h1 className='text-3xl font-medium'>Related Doctors</h1>
 
@@ -44,22 +44,28 @@ const RelatedDoctor = ({ speciality, docId }) => {
               onClick={() => handleNavigate(`/appointments/${item._id}`)}
               className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 transition-all duration-500'
             >
-              <img
-                className="w-full h-60 object-contain sm:object-cover"
-                src={item.image}
-                alt={item.name}
-              />
+              <div className='relative'>
+                <img
+                  className="w-full h-60 object-contain sm:object-cover"
+                  src={item.image}
+                  alt={item.name}
+                />
+
+                {/* Rating badge */}
+                <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full shadow text-sm flex items-center gap-1">
+                  <span className="text-yellow-500">⭐</span>
+                  <span className="text-gray-700">{item.averageRating || "0.0"}</span>
+                </div>
+              </div>
 
               <div className='p-4'>
                 <div
-                  className={`flex items-center gap-2 text-sm ${
-                    isAvailable ? "text-green-500" : "text-gray-500"
-                  }`}
+                  className={`flex items-center gap-2 text-sm ${isAvailable ? "text-green-500" : "text-gray-500"
+                    }`}
                 >
                   <p
-                    className={`w-2 h-2 rounded-full ${
-                      isAvailable ? "bg-green-500" : "bg-gray-400"
-                    }`}
+                    className={`w-2 h-2 rounded-full ${isAvailable ? "bg-green-500" : "bg-gray-400"
+                      }`}
                   ></p>
 
                   <p>{isAvailable ? "Available" : "Not Available"}</p>

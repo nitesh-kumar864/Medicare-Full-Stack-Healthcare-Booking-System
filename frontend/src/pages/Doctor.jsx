@@ -2,16 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import DoctorPageSkeleton from "../components/skeletons/DoctorPageSkeleton";
-import { 
-  Filter, 
-  Stethoscope, 
-  Baby, 
-  Brain, 
-  Heart, 
-  Venus, 
-  Sun, 
-  Bone, 
-  Eye 
+import {
+  Filter,
+  Stethoscope,
+  Baby,
+  Brain,
+  Heart,
+  Venus,
+  Sun,
+  Bone,
+  Eye
 } from "lucide-react";
 
 const Doctor = () => {
@@ -19,7 +19,7 @@ const Doctor = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-const { doctors, getDoctorsData } = useContext(AppContext);
+  const { doctors, getDoctorsData } = useContext(AppContext);
 
 
   const [filterDoc, setFilterDoc] = useState([]);
@@ -62,36 +62,36 @@ const { doctors, getDoctorsData } = useContext(AppContext);
 
     setFilterDoc(result);
   };
-useEffect(() => {
-  let intervalId;
+  useEffect(() => {
+    let intervalId;
 
-  const initLoad = async () => {
-    if (!doctors || doctors.length === 0) {
-      await getDoctorsData(); 
+    const initLoad = async () => {
+      if (!doctors || doctors.length === 0) {
+        await getDoctorsData();
+      }
+      setLoading(false);
+    };
+
+    initLoad();
+
+    intervalId = setInterval(() => {
+      getDoctorsData();
+    }, 15000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+
+  useEffect(() => {
+    if (doctors) {
+      applyFilter();
     }
-    setLoading(false); 
-  };
-
-  initLoad();
-
-  intervalId = setInterval(() => {
-    getDoctorsData(); 
-  }, 15000);
-
-  return () => clearInterval(intervalId);
-}, []);
+  }, [doctors, selectedSpeciality, search]);
 
 
-useEffect(() => {
-  if (doctors) {
-    applyFilter();
+  if (loading) {
+    return <DoctorPageSkeleton />;
   }
-}, [doctors, selectedSpeciality, search]);
- 
-
-if (loading) {
-  return <DoctorPageSkeleton />;
-}
 
 
   return (
@@ -117,9 +117,8 @@ if (loading) {
 
           {/* FILTER TOGGLE BUTTON (Mobile) */}
           <button
-            className={`flex items-center gap-2 py-1 px-3 border rounded text-sm transition-all sm:hidden ${
-              showFilter ? "bg-primary text-white" : ""
-            }`}
+            className={`flex items-center gap-2 py-1 px-3 border rounded text-sm transition-all sm:hidden ${showFilter ? "bg-primary text-white" : ""
+              }`}
             onClick={() => setShowFilter((prev) => !prev)}
           >
             <Filter size={16} />
@@ -128,9 +127,8 @@ if (loading) {
 
           {/* SPECIALITY FILTER LIST */}
           <div
-            className={`flex-col gap-3 text-sm ${
-              showFilter ? "flex" : "hidden sm:flex"
-            }`}
+            className={`flex-col gap-3 text-sm ${showFilter ? "flex" : "hidden sm:flex"
+              }`}
           >
             {specialityList.map((item) => {
               const Icon = item.icon;
@@ -146,10 +144,9 @@ if (loading) {
                     cursor-pointer px-4 py-2 rounded-full border shadow-sm 
                     flex items-center gap-2 transition-all duration-300 select-none
 
-                    ${
-                      speciality === item.name
-                        ? "bg-primary text-white border-primary scale-[1.03] shadow-md"
-                        : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
+                    ${speciality === item.name
+                      ? "bg-primary text-white border-primary scale-[1.03] shadow-md"
+                      : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
                     }
                   `}
                 >
@@ -169,22 +166,28 @@ if (loading) {
                   onClick={() => navigate(`/appointments/${item._id}`)}
                   className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 transition-all duration-500"
                 >
-                  <img
-                    className="w-full h-60 object-contain sm:object-cover"
-                    src={item.image}
-                    alt={item.name}
-                  />
+                  <div className='relative'>
+                    <img
+                      className="w-full h-60 object-contain sm:object-cover"
+                      src={item.image}
+                      alt={item.name}
+                    />
+
+                    {/* Rating badge */}
+                    <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full shadow text-sm flex items-center gap-1">
+                      <span className="text-yellow-500">⭐</span>
+                      <span className="text-gray-700">{item.averageRating || "0.0"}</span>
+                    </div>
+                  </div>
 
                   <div className="p-4">
                     <div
-                      className={`flex items-center gap-2 text-sm ${
-                        item.available ? "text-green-500" : "text-gray-500"
-                      }`}
+                      className={`flex items-center gap-2 text-sm ${item.available ? "text-green-500" : "text-gray-500"
+                        }`}
                     >
                       <p
-                        className={`w-2 h-2 rounded-full ${
-                          item.available ? "bg-green-500" : "bg-gray-400"
-                        }`}
+                        className={`w-2 h-2 rounded-full ${item.available ? "bg-green-500" : "bg-gray-400"
+                          }`}
                       ></p>
                       <p>{item.available ? "Available" : "Not Available"}</p>
                     </div>
