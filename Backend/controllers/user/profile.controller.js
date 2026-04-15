@@ -60,15 +60,8 @@ export const changeUsername = async (req, res) => {
 
     const result = await changeUsernameService(userId, newUsername);
     return res.json(result);
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.status(409).json({
-        success: false,
-        message: "This username is not available",
-      });
-    }
-
-    return res.json({
+  }  catch (error) {
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

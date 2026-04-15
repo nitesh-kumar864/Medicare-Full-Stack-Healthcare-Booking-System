@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, Eye,EyeOff  } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -152,7 +152,7 @@ const LoginPage = () => {
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-sm 
                        text-emerald-700 cursor-pointer select-none"
                 >
-                  {showPassword ? "Hide" : "Show"}
+                    {showPassword ? <EyeOff size={20 } /> : < Eye size={20} />}
                 </span>
               </div>
 

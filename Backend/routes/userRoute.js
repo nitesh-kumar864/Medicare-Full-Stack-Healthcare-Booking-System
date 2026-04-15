@@ -62,6 +62,8 @@ userRouter.post("/book-appointment", authUser, bookAppointment);
 userRouter.get("/appointments", authUser, listAppointment);
 userRouter.post("/cancel-appointment", authUser, cancelAppointment);
 
+// ----- bed booking ---------
 userRouter.get("/booking-status", authUser, getBookingStatus);
 
 export default userRouter;
+ 

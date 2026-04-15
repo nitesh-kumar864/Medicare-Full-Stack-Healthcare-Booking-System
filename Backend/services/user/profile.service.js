@@ -75,6 +75,8 @@ export const updateProfileService = async (userId, data, file) => {
   if (file) {
     const uploadRes = await cloudinary.uploader.upload(file.path, {
       resource_type: "image",
+      folder: "medicare/profile_image",
+      public_id: `user_${userId}`,
     });
     updateData.image = uploadRes.secure_url;
   }

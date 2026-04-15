@@ -52,7 +52,7 @@ export const uploadChatFileService = async (appointmentId, file) => {
           if (error) reject(error);
           else resolve(result);
         }
-      );
+      ); 
 
       streamifier.createReadStream(file.buffer).pipe(stream);
     });

@@ -75,7 +75,7 @@ export const bookAppointmentService = async (userId, data) => {
     slotTime,
     status: "pending",
     payment: false,
-  });
+  }); 
 
   // AUTO RELEASE SLOT 
   setTimeout(async () => {
@@ -153,6 +153,8 @@ export const cancelAppointmentService = async (userId, appointmentId) => {
   appointment.cancelled = true;
   await appointment.save();
 
+
+  // send to Patients
     await sendEmail({
     to: appointment.userData.email,
     subject: "Appointment Cancelled",

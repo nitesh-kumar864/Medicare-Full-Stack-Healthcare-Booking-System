@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Lock, Mail, User, AtSign } from "lucide-react";
+import { Lock, Mail, User, AtSign,Eye,EyeOff } from "lucide-react";
 import { useState, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -13,7 +13,7 @@ import { ButtonLoader } from "../components/Loader";
 import useUsernameAvailability from "../hooks/useUsernameAvailability";
 
 const SignUpPage = () => {
-  const { backendUrl, setToken } = useContext(AppContext);
+  const { backendUrl } = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -89,12 +89,6 @@ const SignUpPage = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     };
-
-    if (!isUsernameValid) {
-      toast.error("Please choose a valid username");
-      return;
-    }
-
 
     if (!acceptedTerms) {
       scrollTopMobile();
@@ -298,7 +292,7 @@ const SignUpPage = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-emerald-700 cursor-pointer select-none"
                   >
-                    {showPassword ? "Hide" : "Show"}
+                     {showPassword ? <EyeOff size={20 } /> : < Eye size={20} />}
                   </span>
                 </div>
 

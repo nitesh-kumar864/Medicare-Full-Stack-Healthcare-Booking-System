@@ -68,15 +68,15 @@ const MySupport = () => {
   const getStatusConfig = (ticket) =>
     ticket.adminReply
       ? {
-          text: "Replied",
-          color: "bg-blue-100 text-blue-800 border-blue-200",
-          icon: "💬",
-        }
+        text: "Replied",
+        color: "bg-blue-100 text-blue-800 border-blue-200",
+        icon: "💬",
+      }
       : {
-          text: "Pending",
-          color: "bg-amber-100 text-amber-800 border-amber-200",
-          icon: "⏳",
-        };
+        text: "Pending",
+        color: "bg-amber-100 text-amber-800 border-amber-200",
+        icon: "⏳",
+      };
 
   // ---------------- HELPERS ----------------
   const toggleExpand = (id) =>

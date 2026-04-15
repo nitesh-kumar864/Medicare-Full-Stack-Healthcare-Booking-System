@@ -5,7 +5,7 @@ const sendEmail = async ({ to, subject, html }) => {
     await axios.post(
       "https://api.brevo.com/v3/smtp/email",
       {
-        sender: { name: "Medicare", email: "medicareapp01@gmail.com" },
+        sender: { name: "Medicare", email: process.env.BREVO_EMAIL},
         to: [{ email: to }],
         subject,
         htmlContent: html,

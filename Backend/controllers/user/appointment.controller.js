@@ -27,7 +27,7 @@ export const listAppointment = async (req, res) => {
     const userId = req.userId;
 
     const result = await listAppointmentService(userId);
-    return res.json(result);
+    return res.status(201).json(result);
   } catch (error) {
     console.error("List appointment error:", error);
     return res.json({
@@ -44,7 +44,7 @@ export const cancelAppointment = async (req, res) => {
     const { appointmentId } = req.body;
 
     const result = await cancelAppointmentService(userId, appointmentId);
-    return res.json(result);
+    return res.status(201).json(result);
   } catch (error) {
     console.error("Cancel appointment error:", error);
     return res.json({

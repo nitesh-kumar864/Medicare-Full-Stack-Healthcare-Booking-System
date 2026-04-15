@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const supportSchema = new mongoose.Schema(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: false },
+    userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "users", 
+    required: false
+   },
     name: String,
     email: String,
     subject: String,

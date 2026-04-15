@@ -23,10 +23,10 @@ export const validateUsername = async (username) => {
     };
   }
 
-  if (username.length > 15) {
+  if (username.length > 20) {
     return {
       valid: false,
-      message: "Username cannot exceed 15 characters",
+      message: "Username cannot exceed 20 characters",
     };
   }
 
@@ -38,7 +38,7 @@ export const validateUsername = async (username) => {
 
   const exists = await userModel.findOne({ username });
   if (exists) {
-    return { valid: false, message: "This username is already taken" };
+    return { valid: false, message: "This username is not currently available" };
   }
 
   return { valid: true, username };

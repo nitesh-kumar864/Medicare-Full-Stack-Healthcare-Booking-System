@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { DoctorContext } from "../context/DoctorContext";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock } from "lucide-react"; // icons
+import { Mail, Lock,Eye,EyeOff } from "lucide-react"; // icons
 
 const Login = () => {
   const [state, setState] = useState("Admin");
@@ -100,7 +100,7 @@ const Login = () => {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-700 cursor-pointer text-sm"
           >
-            {showPassword ? "Hide" : "Show"}
+             {showPassword ? <EyeOff size={20 } /> : < Eye size={20} />}
           </span>
         </div>
 

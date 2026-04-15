@@ -1,5 +1,9 @@
+<h1 align="center">🏥 Medicare</h1>
 
-<h1 align="center">🏥 Medicare – Full Stack Healthcare Management Platform</h1>
+<p align="center">
+  <b>Full Stack Healthcare Management Platform</b>
+</p>
+
 <!-- BADGES -->
 <p align="center">
   <img src="https://img.shields.io/badge/MERN-Stack-000000?style=for-the-badge&logo=react&logoColor=61DAFB"/>
@@ -9,22 +13,15 @@
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"/>
 </p>
 
+<p align="center">
+ Developed a MERN-based healthcare system supporting Patients, Doctors, and Admin with features like JWT authentication, OTP verification, appointment and bed booking, Razorpay payments, real-time chat, feedback system, support management, and admin analytics dashboard.
+</p>
+<h3 align="center">
+  🌐 <a href="https://medicare-pr8s.onrender.com" target="_blank"><b>Live Demo</b></a>
+</h3>
 
-**Medicare** is a scalable, full-stack healthcare management platform built using the MERN stack. It provides a complete ecosystem for patients, doctors, and administrators to manage appointments, bed bookings, payments, profiles, and support queries through role-based dashboards.
-
-The project is designed with real-world healthcare workflows in mind, focusing on security, scalability, and clean architecture.
 
 ---
-
-## 🌐 Live Demo
-
-🚀 **[View Live Project](https://medicare-pr8s.onrender.com)**
-
-_Deployed on Render with environment-based configuration._
-
----
-
-
 ## 📸 Screenshots
 
 ### 🏠 Home Page
@@ -58,17 +55,17 @@ _Deployed on Render with environment-based configuration._
 ### 📋 My Appointments Dashboard
 
 <p align="center">
-  <img src="screenshots/appointments.png" width="80%"/>
+  <img src="screenshots/MyAppointments.png" width="80%"/>
 </p>
 
 <p align="center">
-<i>Dashboard to manage appointments with status tracking, filtering, and doctor chat option.</i>
+<i>Dashboard to manage appointments with status tracking, filtering, prescription and doctor chat option.</i>
 </p>
 
 ### 💬 Real-Time Doctor Chat
 
 <p align="center">
-  <img src="screenshots/chat.png" width="80%"/>
+  <img src="screenshots/chats.png" width="80%"/>
 </p>
 
 <p align="center">
@@ -78,11 +75,21 @@ _Deployed on Render with environment-based configuration._
 ### 🛏️ Bed Management System
 
 <p align="center">
-  <img src="screenshots/bed-management.png" width="80%"/>
+  <img src="screenshots/bed_dashboard.png" width="80%"/>
 </p>
 
 <p align="center">
   <i>Real-time bed availability tracking with department filters, occupancy status, and utilization analytics.</i>
+</p>
+
+### 🛏️ My Bed Dashboard
+
+<p align="center">
+  <img src="screenshots/MyBed.png" width="80%"/>
+</p>
+
+<p align="center">
+  <i>Dasboard to manage bed with status, filtering and functionality.</i>
 </p>
 
 ### 🛟 Help Center & Support
@@ -125,6 +132,7 @@ _Deployed on Render with environment-based configuration._
  <i>Admin panel for configuring bed capacity and managing hospital bed utilization in real-time.</i>
 </p>
 
+---
 
 
 
@@ -296,7 +304,6 @@ npm run dev
 ## 🔮 Future Features
 - Doctor availability calendar
 - Appointment reminders (Email / SMS)
-- Prescription upload (PDF)
 - Dark mode support
 
 ---
