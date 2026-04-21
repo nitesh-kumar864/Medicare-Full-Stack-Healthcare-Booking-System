@@ -17,7 +17,7 @@ import chatRoutes from "./routes/chatRoute.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import publicRoutes from "./routes/publicRoutes.js";
 
-import { initSocket }  from "./socket/index.js";
+import { initSocket } from "./socket/index.js";
 
 
 const app = express();
@@ -30,8 +30,8 @@ connectCloudinary();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://medicare-booking-platform.vercel.app",    
-  "https://medicare-admin-beta.vercel.app/"    
+  "https://medicare-booking-platform.vercel.app",
+  "https://medicare-admin-beta.vercel.app"
 ];
 
 
@@ -47,8 +47,7 @@ app.use(
       if (!origin) return callback(null, true);
 
       // Accept if origin startsWith any allowed origin
-      const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
-
+      const isAllowed = allowedOrigins.includes(origin);
       if (isAllowed) {
         return callback(null, true);
       } else {
