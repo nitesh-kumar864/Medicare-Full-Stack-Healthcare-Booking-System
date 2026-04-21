@@ -30,8 +30,8 @@ connectCloudinary();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://medicare-pr8s.onrender.com",    
-  "https://medicare-admin-a2zd.onrender.com"    
+  "https://medicare-booking-platform.vercel.app",    
+  "https://medicare-admin-beta.vercel.app/"    
 ];
 
 

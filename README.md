@@ -17,7 +17,7 @@
  Developed a MERN-based healthcare system supporting Patients, Doctors, and Admin with features like JWT authentication, OTP verification, appointment and bed booking, Razorpay payments, real-time chat, feedback system, support management, and admin analytics dashboard.
 </p>
 <h3 align="center">
-  🌐 <a href="https://medicare-pr8s.onrender.com" target="_blank"><b>Live Demo</b></a>
+  🌐 <a href="https://medicare-booking-platform.vercel.app/" target="_blank"><b>Live Demo</b></a>
 </h3>
 
 
