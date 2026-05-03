@@ -366,6 +366,7 @@ const SignUpPage = () => {
                 state={{ from: redirectTo }}
                 className="text-primary font-semibold hover:underline"
               >
+                Login
               </Link>
             </p>
           </div>

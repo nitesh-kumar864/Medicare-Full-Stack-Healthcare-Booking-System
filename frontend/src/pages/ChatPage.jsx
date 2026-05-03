@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import socket from "../socket";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { IoCheckmarkDone } from "react-icons/io5";
 
 import {
   Send,
@@ -298,7 +299,7 @@ const ChatPage = () => {
                           <span>{new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                           {isMe && (
                             <span>{m.seen
-                              ? <CheckCheck size={14}
+                              ? <IoCheckmarkDone size={20}
                                 className="text-blue-500" />
                               : <Check size={14}
                                 className="text-gray-400" />}
