@@ -34,10 +34,10 @@ const Banner = () => {
           alt="Appointment"
           loading="lazy"
           className="
-      w-40 mx-auto mt-6           
-      sm:w-56
-      md:w-full md:mt-0         
-    "
+              w-40 mx-auto mt-6           
+              sm:w-56
+              md:w-full md:mt-0         
+            "
         />
       </div>
 

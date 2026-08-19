@@ -246,6 +246,6 @@ ${userMessage}
         return response;
     } catch (error) {
         console.error("Gemini API Error:", error);
-        throw new Error("Unable to generate AI response");
+        throw new Error("AI service is temporarily unavailable due to usage limits. Please try again later.");
     }
 };

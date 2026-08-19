@@ -50,12 +50,12 @@ const useAppointmentCore = ({
   /* ---------------- Auto Refresh ---------------- */
   useEffect(() => {
     if (!docInfo) return;
-    const interval = setInterval(() => getDoctorsData(), 5000);
+    const interval = setInterval(() => getDoctorsData(), 30000);
     return () => clearInterval(interval);
   }, [docInfo, getDoctorsData]);
 
   /* ---------------- Time Slot Generator ---------------- */
-  const generateTimeSlots = (startTime = "10:00", endTime = "21:00") => {
+  const generateTimeSlots = (startTime = "10:00", endTime = "24:00") => {
     const slots = [];
     const [sh, sm] = startTime.split(":").map(Number);
     const [eh, em] = endTime.split(":").map(Number);
@@ -108,7 +108,9 @@ const useAppointmentCore = ({
         { headers: { token } }
       );
       if (data.success) setAppointments(data.appointments);
-    } catch { }
+    } catch (err) {
+      console.log(err.data?.message || err.message );
+     }
   };
 
   useEffect(() => {
@@ -122,7 +124,9 @@ const useAppointmentCore = ({
         `${backendUrl}/api/reviews/doctor/${docId}`
       );
       if (data.success) setReviewList(data.reviews);
-    } catch { }
+    } catch (err) {
+      console.log(err.message);
+     }
   };
 
   useEffect(() => {
@@ -253,8 +257,8 @@ const useAppointmentCore = ({
     setComment,
 
     submitReview,
-    handleEditReview: editReview,
-    handleDeleteReview: deleteReview,
+    editReview,
+    deleteReview,
     bookAppointment,
     handleConfirmPayment,
     handleCancelPayment,

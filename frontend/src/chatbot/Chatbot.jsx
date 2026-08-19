@@ -74,7 +74,7 @@ const Chatbot = () => {
                     reply = data.answer;
                 } else {
                     reply =
-                        "Sorry, Unable to get AI response";
+                        "AI service is temporarily unavailable due to usage limits. Please try again later.";
                 }
             }
 

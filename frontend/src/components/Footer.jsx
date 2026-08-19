@@ -177,8 +177,6 @@ const Footer = () => {
           </p>
 
         </div>
-
-
       </div>
 
       {/* DISCLAIMER */}

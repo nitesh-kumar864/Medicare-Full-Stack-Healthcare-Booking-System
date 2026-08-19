@@ -41,7 +41,7 @@ const useUsernameAvailability = ({
       const { data } = await axios.post(
         backendUrl + "/api/user/check-username",
         { username: newUsername },
-        token ? { headers: { token } } : {}
+        { headers: { token } }
       );
 
       if (requestId !== lastRequestRef.current) return;

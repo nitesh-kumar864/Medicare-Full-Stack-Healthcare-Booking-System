@@ -11,11 +11,6 @@ import {
 
 const router = express.Router();
 
-router.get("/test", (req, res) => {
-  res.send("Support route working");
-});
-
-
 router.post("/create", authUser, createSupportTicket);
 router.get("/my-tickets", authUser, getMySupportTickets);
 

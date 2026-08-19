@@ -10,8 +10,8 @@ const ReviewSection = ({
   setComment,
   submitReview,
   reviewList,
-  handleEditReview,
-  handleDeleteReview,
+  editReview,
+  deleteReview,
   userData,
 }) => {
   const [editModal, setEditModal] = useState(false);
@@ -56,7 +56,7 @@ const ReviewSection = ({
       return;
     }
 
-    handleEditReview(editReviewId, editRating, editComment);
+    editReview(editReviewId, editRating, editComment);
     setEditModal(false);
   };
 
@@ -136,7 +136,7 @@ const ReviewSection = ({
                     </button>
 
                     <button
-                      onClick={() => handleDeleteReview(rev._id)}
+                      onClick={() => deleteReview(rev._id)}
                       className="flex items-center gap-1 px-3 py-1.5 text-sm 
                                  text-red-600 border border-red-400 
                                  rounded-full hover:bg-red-50 hover:shadow-sm 
