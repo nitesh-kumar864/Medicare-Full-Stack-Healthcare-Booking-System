@@ -56,7 +56,7 @@ const Chatbot = () => {
             } else {
                 // No FAQ match → ask AI backend
                 const response = await fetch(
-                    "http://localhost:4000/api/chatbot/ai",
+                       `${import.meta.env.VITE_BACKEND_URL}/api/chatbot/ai`,
                     {
                         method: "POST",
                         headers: {
