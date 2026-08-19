@@ -13,7 +13,6 @@ export const INTENTS = [
     response:
       "You can book or manage appointments from the Doctors page. Select a doctor, choose a time slot, and confirm."
   },
-
   {
     name: "payments",
     keywords: [

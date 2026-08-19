@@ -14,38 +14,68 @@ const KEYWORD_EXPANSIONS = {
 };
 
 export function matchIntent(userInput) {
-  if (!userInput) return null;
+  if (!userInput) {
+    return {
+      matched: false,
+      response: null,
+      intent: null,
+      score: 0,
+    };
+  }
 
   let input = userInput.toLowerCase().trim();
 
+  // Check whether user entered a short keyword
+  const wasExpanded = Boolean(KEYWORD_EXPANSIONS[input]);
+
   // Expand short keywords
-  if (KEYWORD_EXPANSIONS[input]) {
+  if (wasExpanded) {
     input = KEYWORD_EXPANSIONS[input];
   }
 
   let bestMatch = null;
   let highestScore = 0;
+  let highestKeywordCount = 0;
 
   for (const intent of INTENTS) {
     let score = 0;
+    let keywordCount = 0;
 
     for (const keyword of intent.keywords) {
       if (input.includes(keyword)) {
         score += keyword.length;
+        keywordCount++;
       }
     }
 
-    if (score > highestScore) {
+    if (
+      score > highestScore ||
+      (score === highestScore && keywordCount > highestKeywordCount)
+    ) {
       highestScore = score;
+      highestKeywordCount = keywordCount;
       bestMatch = intent;
     }
   }
 
-  if (bestMatch && highestScore > 0) {
-    return bestMatch.response;
+  const isConfidentMatch =
+    highestKeywordCount >= 2 ||
+    wasExpanded ||
+    highestScore >= 10;
+
+  if (bestMatch && isConfidentMatch) {
+    return {
+      matched: true,
+      response: bestMatch.response,
+      intent: bestMatch.name,
+      score: highestScore,
+    };
   }
 
-  return (
-    "I’m here to help with your Medicare-related questions. Please ask about appointments, beds, doctors, payments, profile, or support."
-  );
+  return {
+    matched: false,
+    response: null,
+    intent: null,
+    score: highestScore,
+  };
 }

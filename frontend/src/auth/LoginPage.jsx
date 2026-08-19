@@ -70,6 +70,7 @@ const LoginPage = () => {
       });
 
       if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
         setToken(data.token);
 
@@ -160,7 +161,6 @@ const LoginPage = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}
 
-
               <p className="text-sm text-right mt-2">
                 <Link
                   to="/forgot-password"
@@ -204,8 +204,8 @@ const LoginPage = () => {
               type="submit"
               disabled={isLoading || !acceptedTerms}
               className="w-full mt-4 h-12 bg-primary text-white rounded-lg 
-  shadow flex items-center justify-center gap-3
-  disabled:opacity-60 disabled:cursor-not-allowed"
+                          shadow flex items-center justify-center gap-3
+                          disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isLoading && <ButtonLoader />}
               <span>{isLoading ? "Logging in..." : "Login"}</span>

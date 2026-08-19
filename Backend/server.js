@@ -16,6 +16,7 @@ import reviewRoutes from "./routes/reviewRoute.js";
 import chatRoutes from "./routes/chatRoute.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import publicRoutes from "./routes/publicRoutes.js";
+import chatbotRoutes from "./routes/chatbotRoutes.js";
 
 import { initSocket } from "./socket/index.js";
 
@@ -76,6 +77,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/pdf", prescriptionRoutes);
 app.use("/api/public", publicRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 
 // test route

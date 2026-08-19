@@ -6,8 +6,17 @@ import { QUICK_QUESTIONS } from "./quickQuestions";
 
 const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const storedUser = localStorage.getItem("user");
+
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
+    const userName = user?.name || "there";
     const [messages, setMessages] = useState([
-        { text: "Hello! I'm your Medicare assistant. How can I help you today?", isBot: true }
+        {
+            text: `Hello ${userName}! I'm your Medicare assistant. How can I help you today?`,
+            isBot: true
+        }
     ]);
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
@@ -19,20 +28,74 @@ const Chatbot = () => {
     }, [messages]);
 
     // Handle normal typed message
-    const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
+
         if (!inputValue.trim() || isTyping) return;
 
         const userMsg = inputValue.trim();
-        setMessages(prev => [...prev, { text: userMsg, isBot: false }]);
+
+        // Show user's message
+        setMessages(prev => [
+            ...prev,
+            { text: userMsg, isBot: false }
+        ]);
+
         setInputValue("");
         setIsTyping(true);
 
-        setTimeout(() => {
-            const reply = matchIntent(userMsg);
-            setMessages(prev => [...prev, { text: reply, isBot: true }]);
+        try {
+            // First check existing FAQ/intent system
+            const result = matchIntent(userMsg);
+
+            let reply;
+
+            if (result.matched) {
+                // Existing chatbot answer
+                reply = result.response;
+            } else {
+                // No FAQ match → ask AI backend
+                const response = await fetch(
+                    "http://localhost:4000/api/chatbot/ai",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            message: userMsg,
+                        }),
+                    }
+                );
+
+                const data = await response.json();
+
+                if (data.success) {
+                    reply = data.answer;
+                } else {
+                    reply =
+                        "Sorry, Unable to get AI response";
+                }
+            }
+
+            setMessages(prev => [
+                ...prev,
+                { text: reply, isBot: true }
+            ]);
+
+        } catch (error) {
+            console.error("Chatbot Error:", error);
+
+            setMessages(prev => [
+                ...prev,
+                {
+                    text: "Sorry, I'm unable to connect to the AI assistant right now.",
+                    isBot: true
+                }
+            ]);
+        } finally {
             setIsTyping(false);
-        }, 700);
+        }
     };
 
     // Handle quick-question click
