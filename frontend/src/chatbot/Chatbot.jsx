@@ -11,7 +11,7 @@ const Chatbot = () => {
 
     const user = storedUser ? JSON.parse(storedUser) : null;
 
-    const userName = user?.name || "there";
+    const userName = user|| "there";
     const [messages, setMessages] = useState([
         {
             text: `Hello ${userName}! I'm your Medicare assistant. How can I help you today?`,

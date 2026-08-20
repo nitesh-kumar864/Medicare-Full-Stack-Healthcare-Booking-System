@@ -70,7 +70,7 @@ const LoginPage = () => {
       });
 
       if (data.success) {
-        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("user", JSON.stringify(data.user.name));
         localStorage.setItem("token", data.token);
         setToken(data.token);
 

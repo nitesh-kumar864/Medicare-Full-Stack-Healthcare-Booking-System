@@ -19,6 +19,7 @@ const GoogleLoginPatient = ({ redirectTo }) => {
         toast.success("Google Login Successful!");
 
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.userData.name));
         setToken(res.data.token);
         setUserData(res.data.userData);
 

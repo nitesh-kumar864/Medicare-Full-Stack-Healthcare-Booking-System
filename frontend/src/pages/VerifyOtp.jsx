@@ -89,6 +89,7 @@ const VerifyOtp = () => {
       if (data.success) {
         toast.success("Account created successfully");
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user.name));
         setToken(data.token);
        navigate(redirectTo);
       } else {
