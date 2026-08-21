@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaRobot, FaTimes, FaPaperPlane, FaSpinner } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import { matchIntent } from "./matcher";
+import axios from "axios";
 import { QUICK_QUESTIONS } from "./quickQuestions";
 
 const Chatbot = () => {
@@ -45,53 +45,46 @@ const Chatbot = () => {
         setIsTyping(true);
 
         try {
-            // First check existing FAQ/intent system
-            const result = matchIntent(userMsg);
-
-            let reply;
-
-            if (result.matched) {
-                // Existing chatbot answer
-                reply = result.response;
-            } else {
-                // No FAQ match → ask AI backend
-                const response = await fetch(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/chatbot/ai`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            message: userMsg,
-                        }),
-                    }
-                );
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    reply = data.answer;
-                } else {
-                    reply = data.message || "AI service is temporarily unavailable.";
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL}/api/chatbot/ai`,
+                {
+                    message: userMsg,
                 }
-            }
+            );
 
-            setMessages(prev => [
-                ...prev,
-                { text: reply, isBot: true }
-            ]);
+            const data = response.data;
+
+            if (data.success) {
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        text: data.answer,
+                        isBot: true
+                    }
+                ]);
+            } else {
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        text: data.message || "AI service is temporarily unavailable.",
+                        isBot: true
+                    }
+                ]);
+            }
 
         } catch (error) {
             console.error("Chatbot Error:", error);
 
-            setMessages(prev => [
+            setMessages((prev) => [
                 ...prev,
                 {
-                    text: "Sorry, I'm unable to connect to the AI assistant right now.",
+                    text:
+                        error.response?.data?.message ||
+                        "Sorry, I'm unable to connect to the AI assistant right now.",
                     isBot: true
                 }
             ]);
+
         } finally {
             setIsTyping(false);
         }
