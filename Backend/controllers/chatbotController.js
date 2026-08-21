@@ -20,9 +20,10 @@ export const chatWithAI = async (req, res) => {
     } catch (error) {
         console.error("Chatbot Controller Error:", error);
 
-        return res.status(500).json({
+        return res.status(error.status || 500).json({
             success: false,
-            message: "Unable to get AI response",
+            status: error.status || 500,
+            message: error.message,
         });
     }
 };

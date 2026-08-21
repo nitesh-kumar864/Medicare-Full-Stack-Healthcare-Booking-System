@@ -11,7 +11,7 @@ const Chatbot = () => {
 
     const user = storedUser ? JSON.parse(storedUser) : null;
 
-    const userName = user|| "there";
+    const userName = user || "there";
     const [messages, setMessages] = useState([
         {
             text: `Hello ${userName}! I'm your Medicare assistant. How can I help you today?`,
@@ -56,7 +56,7 @@ const Chatbot = () => {
             } else {
                 // No FAQ match → ask AI backend
                 const response = await fetch(
-                       `${import.meta.env.VITE_BACKEND_URL}/api/chatbot/ai`,
+                    `${import.meta.env.VITE_BACKEND_URL}/api/chatbot/ai`,
                     {
                         method: "POST",
                         headers: {
@@ -70,11 +70,10 @@ const Chatbot = () => {
 
                 const data = await response.json();
 
-                if (data.success) {
+                if (response.ok && data.success) {
                     reply = data.answer;
                 } else {
-                    reply =
-                        "AI service is temporarily unavailable due to usage limits. Please try again later.";
+                    reply = data.message || "AI service is temporarily unavailable.";
                 }
             }
 
