@@ -134,22 +134,27 @@ const useAppointmentCore = ({
   }, [docId]);
 
   /* ---------------- Review CRUD ---------------- */
-  const submitReview = async () => {
-    if (!token) {
-      return navigate("/login", {
-        state: { from: `/appointments/${docId}` }
-      });
-    }
-    if (rating === 0) return toast.error("Please give a rating");
+const submitReview = async () => {
+  if (!token) {
+    return navigate("/login", {
+      state: { from: `/appointments/${docId}` },
+    });
+  }
 
-    const completed = appointments.find(
-      (a) => String(a.docId) === String(docId) && a.payment
-    );
+  if (rating === 0) {
+    return toast.error("Please give a rating");
+  }
 
-    if (!completed)
-      return toast.error("Complete appointment before review");
+  const completed = appointments.find(
+    (a) => String(a.docId) === String(docId) && a.payment
+  );
 
-    await axios.post(
+  if (!completed) {
+    return toast.error("Complete appointment before review");
+  }
+
+  try {
+    const { data } = await axios.post(
       `${backendUrl}/api/reviews/add`,
       {
         doctorId: docId,
@@ -160,10 +165,22 @@ const useAppointmentCore = ({
       { headers: { token } }
     );
 
+    if (!data.success) {
+      return toast.error(data.message);
+    }
+
+    toast.success(data.message);
+
     setRating(0);
     setComment("");
     fetchReviews();
-  };
+
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Failed to submit review"
+    );
+  }
+};
 
   const editReview = async (id, r, c) => {
     await axios.put(
