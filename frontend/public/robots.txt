@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://medicare-booking-platform.vercel.app/sitemap.xml
