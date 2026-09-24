@@ -42,11 +42,11 @@ const Header = () => {
         {/* LEFT CONTENT */}
         <div className="md:w-1/2 space-y-6 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl lg:text-5xl font-semibold leading-tight text-white drop-shadow">
-            Book Appointments <br /> with Top Doctors
+             Book Doctor Appointments Online
           </h1>
 
           <p className="text-white text-sm md:text-base font-light leading-relaxed">
-            Search through our trusted & verified doctors and book online appointments.
+            Find trusted doctors, check availability, and book appointments online.
             <br className="hidden md:block" />
           </p>
 
