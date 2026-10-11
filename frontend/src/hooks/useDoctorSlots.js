@@ -8,7 +8,7 @@ const useDoctorSlots = ({ docInfo, appointments }) => {
   const [selectedTime, setSelectedTime] = useState(null);
 
   /* ---------------- Generate time slots ---------------- */
-  const generateTimeSlots = (startTime = "10:00", endTime = "21:00") => {
+  const generateTimeSlots = (startTime = "10:00", endTime = "21:30") => {
     const slots = [];
     const [startH, startM] = startTime.split(":").map(Number);
     const [endH, endM] = endTime.split(":").map(Number);
@@ -55,7 +55,7 @@ const useDoctorSlots = ({ docInfo, appointments }) => {
         day: daysOfWeek[normalizedDate.getDay()],
         date: normalizedDate.getDate(),
         fullDate: normalizedDate.toISOString(),
-        timeSlots: generateTimeSlots("10:00", "21:00"),
+        timeSlots: generateTimeSlots("10:00", "21:30"),
       });
     }
 
@@ -104,31 +104,40 @@ const useDoctorSlots = ({ docInfo, appointments }) => {
       !a.cancelled
   );
 
-  /* ---------------- Filter visible time slots ---------------- */
-  const visibleTimeSlots = selectedDay.timeSlots.filter((slot) => {
-    if (bookedSlots.includes(slot)) return false;
 
-    const slotDateObj = new Date(selectedDay.fullDate);
+/* ---------------- Filter visible time slots ---------------- */
 
-    let [time, ampm] = slot.split(" ");
-    let [h, m] = time.split(":").map(Number);
+const visibleTimeSlots = selectedDay.timeSlots.filter((slot) => {
+  const slotDateObj = new Date(selectedDay.fullDate);
 
-    if (ampm === "PM" && h !== 12) h += 12;
-    if (ampm === "AM" && h === 12) h = 0;
+  const [time, ampm] = slot.split(" ");
+  let [hour, minute] = time.split(":").map(Number);
 
-    slotDateObj.setHours(h, m, 0, 0);
+  // Convert 12-hour time to 24-hour time
+  if (ampm === "PM" && hour !== 12) hour += 12;
+  if (ampm === "AM" && hour === 12) hour = 0;
 
-    const now = new Date();
+  slotDateObj.setHours(hour, minute, 0, 0);
 
-    if (
-      slotDateObj.toDateString() === now.toDateString() &&
-      slotDateObj <= new Date(now.getTime() + 30 * 60000)
-    ) {
-      return false;
-    }
+  const now = new Date();
 
-    return true;
-  });
+  // Hide past slots and slots starting within the next 30 minutes
+  const minimumAllowedTime = new Date(
+    now.getTime() + 30 * 60 * 1000
+  );
+
+  if (slotDateObj <= minimumAllowedTime) {
+    return false;
+  }
+
+  // Hide already booked slots
+  if (bookedSlots.includes(slot)) {
+    return false;
+  }
+
+  // Keep future unavailable and locked slots visible
+  return true;
+});
 
   return {
     docSlots,

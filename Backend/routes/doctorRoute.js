@@ -27,9 +27,14 @@ import {
 //--------------------  DASHBOARD------------------- 
 import { doctorDashboard } from "../controllers/doctor/dashboard.controller.js";
 
+//--------------------  availibility  ------------------- 
+import {blockDoctorSlot,
+  unblockDoctorSlot,
+  blockDoctorDate,
+  unblockDoctorDate, } from "../controllers/doctor/doctorAvailabilityController.js";
+
 //--------------------  PUBLIC ------------------- 
 import { doctorList } from "../controllers/doctor/doctor.controller.js";
-
 
 
 // PUBLIC
@@ -52,5 +57,11 @@ doctorRouter.post("/appointment/cancel", authDoctor, appointmentCancel);
 
 // DASHBOARD
 doctorRouter.get("/dashboard", authDoctor, doctorDashboard);
+
+// avaiability 
+doctorRouter.post("/:doctorId/block-slot", blockDoctorSlot);
+doctorRouter.delete("/:doctorId/block-slot", unblockDoctorSlot);
+doctorRouter.post("/:doctorId/block-date", blockDoctorDate);
+doctorRouter.delete("/:doctorId/block-date", unblockDoctorDate);
 
 export default doctorRouter;

@@ -27,6 +27,19 @@ const doctorSchema = new mongoose.Schema({
     }
   ],
 
+  unavailableSlots: [
+    {
+      date: { type: String, required: true },
+      time: { type: String, required: true },
+    },
+  ],
+
+  unavailableDates: [
+    {
+      date: { type: String, required: true },
+    },
+  ],
+
   averageRating: {
     type: Number,
     default: 0,
@@ -37,7 +50,7 @@ const doctorSchema = new mongoose.Schema({
     default: 0,
   },
 
-  
+
   resetPasswordToken: {
     type: String,
     default: undefined,

@@ -55,24 +55,25 @@ const useAppointmentCore = ({
   }, [docInfo, getDoctorsData]);
 
   /* ---------------- Time Slot Generator ---------------- */
-  const generateTimeSlots = (startTime = "10:00", endTime = "24:00") => {
+  const generateTimeSlots = (startTime = "10:00", endTime = "21:30") => {
     const slots = [];
+
     const [sh, sm] = startTime.split(":").map(Number);
     const [eh, em] = endTime.split(":").map(Number);
 
-    const cur = new Date("2000-01-01T00:00");
-    cur.setHours(sh, sm, 0, 0);
-
-    const end = new Date("2000-01-01T00:00");
-    end.setHours(eh, em, 0, 0);
+    const cur = new Date(2000, 0, 1, sh, sm, 0, 0);
+    const end = new Date(2000, 0, 1, eh, em, 0, 0);
 
     while (cur <= end) {
       const hr = cur.getHours();
-      const min = cur.getMinutes().toString().padStart(2, "0");
+      const min = String(cur.getMinutes()).padStart(2, "0");
       const ampm = hr >= 12 ? "PM" : "AM";
+
       slots.push(`${hr % 12 || 12}:${min} ${ampm}`);
+
       cur.setMinutes(cur.getMinutes() + 30);
     }
+
     return slots;
   };
 
@@ -87,18 +88,23 @@ const useAppointmentCore = ({
       const d = new Date(today);
       d.setDate(today.getDate() + i);
 
+      // Local calendar date ko preserve karein
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+
       slotsArr.push({
         day: daysOfWeek[d.getDay()],
         date: d.getDate(),
-        fullDate: d.toISOString(),
-        timeSlots: generateTimeSlots(),
+        fullDate: `${year}-${month}-${day}T00:00:00`,
+        timeSlots: generateTimeSlots("10:00", "21:30"),
       });
     }
 
     setDocSlots(slotsArr);
     setSelectedDayIndex(0);
     setSelectedTime(null);
-  }, [docInfo]);
+  }, [docInfo?._id]);
 
   /* ---------------- Appointments ---------------- */
   const fetchUserAppointments = async () => {
@@ -109,8 +115,8 @@ const useAppointmentCore = ({
       );
       if (data.success) setAppointments(data.appointments);
     } catch (err) {
-      console.log(err.data?.message || err.message );
-     }
+      console.log(err.data?.message || err.message);
+    }
   };
 
   useEffect(() => {
@@ -126,7 +132,7 @@ const useAppointmentCore = ({
       if (data.success) setReviewList(data.reviews);
     } catch (err) {
       console.log(err.message);
-     }
+    }
   };
 
   useEffect(() => {
@@ -134,53 +140,53 @@ const useAppointmentCore = ({
   }, [docId]);
 
   /* ---------------- Review CRUD ---------------- */
-const submitReview = async () => {
-  if (!token) {
-    return navigate("/login", {
-      state: { from: `/appointments/${docId}` },
-    });
-  }
-
-  if (rating === 0) {
-    return toast.error("Please give a rating");
-  }
-
-  const completed = appointments.find(
-    (a) => String(a.docId) === String(docId) && a.payment
-  );
-
-  if (!completed) {
-    return toast.error("Complete appointment before review");
-  }
-
-  try {
-    const { data } = await axios.post(
-      `${backendUrl}/api/reviews/add`,
-      {
-        doctorId: docId,
-        appointmentId: completed._id,
-        rating,
-        comment,
-      },
-      { headers: { token } }
-    );
-
-    if (!data.success) {
-      return toast.error(data.message);
+  const submitReview = async () => {
+    if (!token) {
+      return navigate("/login", {
+        state: { from: `/appointments/${docId}` },
+      });
     }
 
-    toast.success(data.message);
+    if (rating === 0) {
+      return toast.error("Please give a rating");
+    }
 
-    setRating(0);
-    setComment("");
-    fetchReviews();
-
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message || "Failed to submit review"
+    const completed = appointments.find(
+      (a) => String(a.docId) === String(docId) && a.payment
     );
-  }
-};
+
+    if (!completed) {
+      return toast.error("Complete appointment before review");
+    }
+
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/api/reviews/add`,
+        {
+          doctorId: docId,
+          appointmentId: completed._id,
+          rating,
+          comment,
+        },
+        { headers: { token } }
+      );
+
+      if (!data.success) {
+        return toast.error(data.message);
+      }
+
+      toast.success(data.message);
+
+      setRating(0);
+      setComment("");
+      fetchReviews();
+
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to submit review"
+      );
+    }
+  };
 
   const editReview = async (id, r, c) => {
     await axios.put(
@@ -219,35 +225,96 @@ const submitReview = async () => {
   };
 
   /* ---------------- Book Appointment ---------------- */
+
   const bookAppointment = async (slotDate, slotTime) => {
     if (!token) {
       return navigate("/login", {
-        state: { from: `/appointments/${docId}` }
+        state: { from: `/appointments/${docId}` },
       });
     }
-    if (!selectedTime) return toast.error("Select time slot");
+
+    if (!selectedTime || !slotTime) {
+      return toast.error("Select a time slot");
+    }
+
+    if (!docInfo) {
+      return toast.error("Doctor information is unavailable");
+    }
+
+    if (!docInfo.available) {
+      return toast.error("This doctor is currently unavailable");
+    }
+
+    const unavailableDates = Array.isArray(docInfo.unavailableDates)
+      ? docInfo.unavailableDates
+      : [];
+
+    const unavailableSlots = Array.isArray(docInfo.unavailableSlots)
+      ? docInfo.unavailableSlots
+      : [];
+
+    if (unavailableDates.some((item) => item.date === slotDate)) {
+      return toast.error("The doctor is unavailable on this date");
+    }
+
+    if (
+      unavailableSlots.some(
+        (item) => item.date === slotDate && item.time === slotTime
+      )
+    ) {
+      return toast.error("This appointment slot is unavailable");
+    }
+
+    if (
+      docInfo.slots_booked?.some(
+        (item) => item.date === slotDate && item.time === slotTime
+      )
+    ) {
+      return toast.error("This appointment slot has already been booked");
+    }
+
+    if (
+      docInfo.slots_locked?.some(
+        (item) => item.date === slotDate && item.time === slotTime
+      )
+    ) {
+      return toast.error("This appointment slot is temporarily locked");
+    }
+
     if (!isProfileComplete()) {
       toast.error("Complete your profile before booking.");
       navigate("/my-profile", {
-        state: { returnTo: `/appointments/${docId}` }
+        state: { returnTo: `/appointments/${docId}` },
       });
       return;
     }
+
     setBookingLoading(true);
 
-    const { data } = await axios.post(
-      `${backendUrl}/api/user/book-appointment`,
-      { docId, slotDate, slotTime },
-      { headers: { token } }
-    );
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/api/user/book-appointment`,
+        { docId, slotDate, slotTime },
+        { headers: { token } }
+      );
 
-    if (data.success) {
+      if (!data.success) {
+        toast.error(data.message || "Unable to book appointment");
+        return;
+      }
+
       setPendingAppointmentId(data.appointmentId);
       setShowConfirm(true);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        "Unable to book appointment. Please try again."
+      );
+    } finally {
+      setBookingLoading(false);
     }
-
-    setBookingLoading(false);
   };
+
 
   const handleConfirmPayment = () => {
     setShowConfirm(false);
