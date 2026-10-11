@@ -37,6 +37,28 @@ const doctorSchema = new mongoose.Schema({
     default: 0,
   },
 
+  
+  resetPasswordToken: {
+    type: String,
+    default: undefined,
+  },
+
+  resetPasswordExpire: {
+    type: Date,
+    default: undefined,
+  },
+
+  lastPasswordResetRequest: {
+    type: Date,
+    default: undefined,
+  },
+
+  tokenVersion: {
+    type: Number,
+    default: 0,
+  },
+
+
 }, { minimize: false });
 
 const doctorModel = mongoose.models.doctor || mongoose.model('doctor', doctorSchema);

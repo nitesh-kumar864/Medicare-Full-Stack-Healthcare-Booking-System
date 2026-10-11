@@ -3,6 +3,8 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import socket from "./socket";
 
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Admin/Dashboard";
 import AddDoctor from "./pages/Admin/AddDoctor";
 import AllAppointment from "./pages/Admin/AllAppointment";
@@ -85,24 +87,27 @@ const App = () => {
     );
   }
 
-  return (
-    <div className="bg-[#F8F9FD]">
+return (
+  <div className="bg-[#F8F9FD]">
+    <ToastContainer
+      position="top-center"
+      autoClose={2000}
+      newestOnTop={true}
+      pauseOnFocusLoss={false}
+      limit={3}
+    />
 
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        newestOnTop={true}
-        pauseOnFocusLoss={false}
-        limit={3}
-      />
+    <Routes>
+      {/* Public routes: work without login */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-      {/* If NOT logged in → show login */}
+      {/* Protected application routes */}
       {!aToken && !dToken ? (
-        <Login />
+        <Route path="*" element={<Login />} />
       ) : (
-        <Routes>
-
-          {/* ADMIN ROUTES */}
+        <>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="all-appointments" element={<AllAppointment />} />
@@ -115,21 +120,20 @@ const App = () => {
             <Route path="edit-doctor/:doctorId" element={<EditDoctor />} />
           </Route>
 
-
-          {/* DOCTOR ROUTES */}
           <Route path="/doctor" element={<DoctorLayout />}>
             <Route path="dashboard" element={<DoctorDashboard />} />
             <Route path="appointments" element={<DoctorAppointment />} />
             <Route path="profile" element={<DoctorProfile />} />
-            <Route path="/doctor/chat/:appointmentId" element={<DoctorChatPage />} />
-
-
+            <Route
+              path="chat/:appointmentId"
+              element={<DoctorChatPage />}
+            />
           </Route>
-
-        </Routes>
+        </>
       )}
-    </div>
-  );
-};
+    </Routes>
+  </div>
+);
+}
 
 export default App;

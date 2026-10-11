@@ -4,7 +4,11 @@ import authDoctor from "../middlewares/authDoctor.js";
 const doctorRouter = express.Router();
 
 //-------------------- login ------------------- 
-import { loginDoctor } from "../controllers/doctor/auth.controller.js";
+import { 
+  loginDoctor, 
+  resetDoctorPassword, 
+  forgotDoctorPassword 
+} from "../controllers/doctor/auth.controller.js";
 
 //-------------------- PROFILE ------------------- 
 import {
@@ -33,6 +37,8 @@ doctorRouter.get("/list", doctorList);
 
 // AUTH
 doctorRouter.post("/login", loginDoctor);
+doctorRouter.post("/forgot-password", forgotDoctorPassword);
+doctorRouter.post("/reset-password/:token", resetDoctorPassword);
 
 // PROFILE
 doctorRouter.get("/profile", authDoctor, doctorProfile);

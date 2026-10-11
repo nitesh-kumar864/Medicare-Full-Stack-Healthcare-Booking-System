@@ -3,8 +3,8 @@ import { AdminContext } from "../context/AdminContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { DoctorContext } from "../context/DoctorContext";
-import { useNavigate } from "react-router-dom";
-import { Mail, Lock,Eye,EyeOff } from "lucide-react"; // icons
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react"; // icons
 
 const Login = () => {
   const [state, setState] = useState("Admin");
@@ -86,22 +86,45 @@ const Login = () => {
         </div>
 
         {/* PASSWORD INPUT */}
-        <div className="relative mb-6">
-          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-600 size-5" />
-          <input
-            type={showPassword ? "text" : "password"}
-            className="w-full bg-white border border-gray-300 rounded-xl py-3 pl-10 pr-3 text-gray-800 placeholder-gray-500 shadow-sm focus:ring-emerald-500/40 focus:border-emerald-600 transition"
-            placeholder="Password"
-            value={password}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <span
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-700 cursor-pointer text-sm"
-          >
-             {showPassword ? <EyeOff size={20 } /> : < Eye size={20} />}
-          </span>
+        <div className="mb-6">
+          <div className="relative">
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2
+                 text-emerald-600 size-5"
+            />
+
+            <input
+              type={showPassword ? "text" : "password"}
+              className="w-full bg-white border border-gray-300 rounded-xl
+                 py-3 pl-10 pr-12 text-gray-800
+                 placeholder-gray-500 shadow-sm
+                 focus:ring-emerald-500/40 focus:border-emerald-600
+                 transition"
+              placeholder="Password"
+              value={password}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2
+                 text-emerald-700 flex items-center justify-center"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+
+          <p className="text-sm text-right mt-3">
+            <Link
+              to="/forgot-password"
+              className="text-primary font-medium hover:underline"
+            >
+              Forgot Password?
+            </Link>
+          </p>
         </div>
 
         {/* SUBMIT BUTTON */}
